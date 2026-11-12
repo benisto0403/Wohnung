@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#1F5F9E">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Einrichten">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Einrichtungsplaner – Meine erste Wohnung 2.0</title>
+<style>
+:root{
+  --paper:#F7F7F3; --ink:#16232E; --soft:#55656F; --rule:#C9D2D8; --blue:#1F5F9E;
+  --wood:#A9702A; --red:#B4472E; --ok:#2E7D4F;
+  --sans:"Avenir Next","Segoe UI",system-ui,-apple-system,"Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{background:var(--paper);font-family:var(--sans);color:var(--ink);font-size:20px;line-height:1.5;
+  padding-left:env(safe-area-inset-left);padding-right:env(safe-area-inset-right)}
+button{touch-action:manipulation;font:inherit}
+.top{position:sticky;top:0;z-index:10;background:#fff;border-bottom:2px solid var(--ink);padding-top:env(safe-area-inset-top)}
+.top .in{max-width:1280px;margin:0 auto;padding:10px 22px 12px}
+.top .zeile{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap}
+.top h1{font-size:23px;font-weight:600}
+.top .stand{font-size:19px;color:var(--soft)}
+.top .rechts{display:flex;align-items:center;gap:14px}
+.top .sichern{font-size:19px;font-weight:600;min-height:48px;padding:0 18px;border:2px solid var(--ok);background:#fff;color:var(--ok);border-radius:4px;cursor:pointer}
+.speicherzeile{display:inline-flex;align-items:center;gap:12px;flex-wrap:wrap}
+.gesp{font-size:19px;font-weight:600}
+.gesp.ja{color:var(--ok)} .gesp.nein{color:var(--red)}
+.weiter{background:#EEF6F1;border-left:5px solid var(--ok);padding:14px 18px;margin-bottom:22px;font-size:20px}
+.weiter .zeile2{margin-top:10px}
+.panel{position:fixed;inset:0;background:rgba(22,35,46,.45);z-index:50;display:flex;align-items:center;justify-content:center;padding:16px}
+.panel .pk{background:#fff;max-width:640px;width:100%;padding:22px 24px;border-top:6px solid var(--ok);max-height:90vh;overflow:auto}
+.panel h3{font-size:24px;margin-bottom:8px}
+.panel .pbtns{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+.panel .dateiknopf{display:inline-flex;align-items:center;position:relative;overflow:hidden;font-size:20px;font-weight:600;min-height:48px;padding:10px 22px;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:4px;cursor:pointer}
+.panel .dateiknopf input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:20px}
+.panel .pmeld{margin-top:14px;font-size:20px;font-weight:600;min-height:30px}
+.panel .pmeld.ja{color:var(--ok)} .panel .pmeld.nein{color:var(--red)}
+.balken{height:10px;background:var(--rule);margin-top:8px;border-radius:5px;overflow:hidden}
+.balken i{display:block;height:100%;background:var(--blue);width:0;transition:width .35s ease}
+.stationen{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.stationen button{font-size:19px;font-weight:600;min-width:48px;height:48px;padding:0 12px;border:1px solid var(--rule);background:#fff;color:var(--soft);cursor:pointer;border-radius:4px}
+.stationen button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.stationen button.fertig{border-color:var(--ok);color:var(--ok);border-width:2px}
+.stationen button.on.fertig{color:#fff}
+.wrap{max-width:980px;margin:0 auto;padding:26px 22px 48px}
+.wrap.breit{max-width:1280px}
+.kicker{font-size:18px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);font-weight:600}
+h2.tt{font-size:34px;font-weight:600;letter-spacing:-.3px;margin:4px 0 6px;line-height:1.15}
+.dauer{font-size:19px;color:var(--soft);margin-bottom:20px}
+.ziel{background:#fff;border-left:5px solid var(--blue);padding:14px 18px;margin-bottom:22px}
+.info{font-size:21px}
+.info h3{font-size:24px;font-weight:600;margin:24px 0 8px}
+p{margin-bottom:12px}
+.info ul,.info ol{margin:0 0 14px 26px}
+.info li{margin-bottom:6px}
+.merke{background:#fff;border:2px solid var(--ink);padding:16px 20px;margin:22px 0;font-size:21px}
+.merke .l,.heft .l{font-size:18px;letter-spacing:2px;text-transform:uppercase;color:var(--soft);font-weight:600;display:block;margin-bottom:6px}
+.heft{background:#FFFBEB;border:2px dashed var(--wood);padding:16px 20px;margin:22px 0}
+.heft .l{color:var(--wood)}
+.heft ul{margin-left:24px} .heft li{margin-bottom:5px}
+figure.abb{background:#fff;border:1px solid var(--rule);padding:12px;margin:18px 0}
+figure.abb svg{display:block;width:100%;height:auto;max-height:680px}
+figure.abb figcaption{font-size:18px;color:var(--soft);margin-top:8px;line-height:1.35}
+table.tab{border-collapse:collapse;margin:14px 0 18px;background:#fff;font-size:20px;width:100%}
+table.tab th,table.tab td{border:1px solid var(--rule);padding:9px 12px;text-align:left;vertical-align:middle}
+table.tab th{background:#EDF2F7;font-weight:600}
+table.tab td.sb{width:150px;text-align:center}
+table.tab td.sb svg{width:130px;height:auto;max-height:110px}
+.legende{display:grid;grid-template-columns:1fr 1fr;gap:8px 22px;margin:10px 0 16px;font-size:20px}
+.legende div{display:flex;align-items:center;gap:12px}
+.legende svg{width:52px;height:34px;flex-shrink:0}
+
+.aufgabe{background:#fff;border:1px solid var(--rule);border-top:5px solid var(--blue);padding:20px 22px;margin:26px 0 0}
+.aufgabe h3{font-size:24px;font-weight:600;margin:0 0 6px}
+.hinw{font-size:19px;color:var(--soft);margin-bottom:16px}
+.zeile2{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:18px}
+button.knopf{font-size:20px;font-weight:600;min-height:48px;padding:10px 22px;border:0;background:var(--blue);color:#fff;cursor:pointer;border-radius:4px}
+button.knopf.zweit{background:#fff;color:var(--ink);border:1px solid var(--rule)}
+button.knopf.rot{background:#fff;color:var(--red);border:1px solid var(--red)}
+button.knopf:disabled{opacity:.45;cursor:not-allowed}
+.erg{font-size:21px;font-weight:600}
+.erg.gut{color:var(--ok)} .erg.mittel{color:var(--wood)} .erg.schlecht{color:var(--red)}
+.tipp{background:#EAF3FB;border-left:5px solid var(--blue);padding:12px 16px;margin-top:16px;font-size:20px;display:none}
+.tipp.zeig{display:block}
+.chip{display:flex;align-items:center;gap:12px;width:100%;min-height:48px;text-align:left;font-size:20px;background:#fff;color:var(--ink);border:1px solid var(--rule);border-left:5px solid var(--rule);padding:8px 14px;margin-bottom:9px;cursor:pointer}
+.chip svg{width:90px;height:60px;flex-shrink:0}
+.chip.sel{border-left-color:var(--blue);background:#EAF3FB}
+.chip.right{border-left-color:var(--ok);background:#EEF6F1}
+.chip.wrong{border-left-color:var(--red);background:#FBEFEC}
+.paar{display:grid;grid-template-columns:1fr 1.3fr;gap:14px}
+.paar h4{font-size:18px;text-transform:uppercase;letter-spacing:1px;color:var(--soft);margin-bottom:9px}
+.num{display:inline-block;min-width:28px;font-weight:700;color:var(--ok)}
+.z{display:flex;gap:14px;align-items:flex-start;border-bottom:1px solid var(--rule);padding:12px 0}
+.z .txt{flex:1}
+.z .btns{display:flex;gap:8px;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end;max-width:62%}
+.z .btns button{font-size:19px;font-weight:600;min-height:48px;padding:6px 14px;border:1px solid var(--rule);background:#fff;color:var(--ink);cursor:pointer;border-radius:4px}
+.z .btns button.pick{background:var(--blue);color:#fff;border-color:var(--blue)}
+.z .btns button.good{background:var(--ok);color:#fff;border-color:var(--ok)}
+.z .btns button.bad{background:var(--red);color:#fff;border-color:var(--red)}
+.z .warum{font-size:19px;color:var(--soft);margin-top:5px;display:none}
+.z.checked .warum{display:block}
+.rechnen .r{border-bottom:1px solid var(--rule);padding:14px 0}
+.rechnen .r input{font-size:20px;width:150px;min-height:48px;padding:6px 10px;border:1px solid var(--rule);text-align:right;border-radius:0;font-family:inherit}
+.rechnen .r input.right{border-color:var(--ok);background:#EEF6F1}
+.rechnen .r input.wrong{border-color:var(--red);background:#FBEFEC}
+.rechnen .einheit{font-size:20px;margin-left:8px}
+.rechnen .weg{font-size:19px;color:var(--soft);margin-top:6px;display:none}
+.rechnen.checked .weg{display:block}
+
+.start .gross{font-size:44px;font-weight:600;letter-spacing:-.5px;line-height:1.1;margin-bottom:10px}
+.start .unter{font-size:22px;color:var(--soft);margin-bottom:24px}
+.karten{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:24px}
+.karten button.k{text-align:left;background:#fff;border:1px solid var(--rule);border-left:5px solid var(--blue);padding:12px 16px;cursor:pointer;color:var(--ink);min-height:48px}
+.karten .k h4{font-size:21px;font-weight:600;margin-bottom:2px}
+.karten .k p{font-size:19px;color:var(--soft);margin:0}
+.namefeld{background:#fff;border:1px solid var(--rule);padding:16px 20px;margin-bottom:22px}
+.namefeld input{font-size:20px;min-height:48px;padding:8px 12px;border:1px solid var(--rule);width:340px;max-width:100%;font-family:inherit}
+details.lk{background:#fff;border:1px solid var(--rule);padding:12px 18px;margin-top:10px;font-size:19px}
+details.lk summary{cursor:pointer;font-weight:600;min-height:40px}
+details.lk ul{margin:8px 0 4px 24px}
+
+/* ---------- Planer ---------- */
+.planer{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:20px;align-items:start}
+.planfl{background:#fff;border:1px solid var(--rule);padding:10px;scroll-margin-top:170px}
+.planlinks{position:sticky;top:150px}
+@media (max-width:1060px){.planlinks{position:static}}
+#plan{display:block;width:100%;height:auto;touch-action:none;user-select:none;-webkit-user-select:none}
+#plan .m{cursor:grab}
+.werkzeug{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-height:62px;padding:6px 4px 10px;border-bottom:1px solid var(--rule);margin-bottom:8px}
+.werkzeug .wname{font-size:20px;font-weight:600;flex:1 1 220px}
+.werkzeug .wname small{display:block;font-size:18px;font-weight:400;color:var(--soft)}
+.werkzeug button{min-width:48px;min-height:48px;font-size:20px;font-weight:600;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:4px;cursor:pointer;padding:0 12px}
+.werkzeug button.loesch{color:var(--red);border-color:var(--red)}
+.werkzeug .leer{font-size:19px;color:var(--soft)}
+.budget{margin-top:10px;font-size:20px}
+.budget .bb{height:16px;background:var(--rule);border-radius:8px;overflow:hidden;margin-top:6px}
+.budget .bb i{display:block;height:100%;background:var(--ok);width:0}
+.budget.drueber .bb i{background:var(--red)}
+.budget.drueber b{color:var(--red)}
+.seite{background:#fff;border:1px solid var(--rule);padding:14px 16px}
+.seite h3{font-size:21px;font-weight:600;margin:4px 0 8px}
+.muss{list-style:none;margin:0 0 14px}
+.muss li{font-size:19px;padding:4px 0 4px 34px;position:relative}
+.muss li::before{content:"";position:absolute;left:0;top:7px;width:22px;height:22px;border:2px solid var(--rule);border-radius:4px}
+.muss li.ok::before{background:var(--ok);border-color:var(--ok)}
+.muss li.ok::after{content:"";position:absolute;left:7px;top:10px;width:7px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+.katg h4{font-size:18px;letter-spacing:1.5px;text-transform:uppercase;color:var(--soft);margin:14px 0 6px}
+.kat-item{display:flex;align-items:center;gap:10px;width:100%;min-height:56px;text-align:left;background:#fff;border:1px solid var(--rule);border-left:5px solid var(--blue);padding:6px 10px;margin-bottom:6px;cursor:pointer;color:var(--ink)}
+.kat-item svg{width:58px;height:44px;flex-shrink:0}
+.kat-item .kt{flex:1;font-size:19px;line-height:1.25}
+.kat-item .kt small{display:block;font-size:18px;color:var(--soft)}
+.kat-item .plus{font-size:26px;font-weight:700;color:var(--blue);width:30px;text-align:center}
+.pruef{margin-top:18px;background:#fff;border:1px solid var(--rule);padding:16px 20px;display:none}
+.pruef.zeig{display:block}
+.pruef h3{font-size:23px;margin-bottom:8px}
+.pruef ul{list-style:none}
+.pruef li{font-size:20px;padding:8px 10px 8px 14px;border-left:5px solid var(--red);background:#FBEFEC;margin-bottom:6px;cursor:pointer}
+.pruef li.h{border-left-color:var(--wood);background:#FFF6E6}
+.pruef li.g{border-left-color:var(--ok);background:#EEF6F1;cursor:default}
+.anl{display:grid;grid-template-columns:1fr 1fr;gap:6px 26px;font-size:19px;margin:0 0 14px}
+.anl div::before{content:"› ";color:var(--blue);font-weight:700}
+
+table.aus{width:100%;border-collapse:collapse;font-size:20px;background:#fff;margin:18px 0}
+table.aus th,table.aus td{border:1px solid var(--rule);padding:8px 12px;text-align:left}
+table.aus th{background:#EDF2F7;font-weight:600}
+table.aus td.re,table.aus th.re{text-align:right;white-space:nowrap}
+table.aus tr.sum td{font-weight:700;border-top:2px solid var(--ink)}
+.refl label{display:block;font-weight:600;font-size:20px;margin:16px 0 6px}
+.refl textarea{width:100%;min-height:96px;font-size:20px;font-family:inherit;padding:10px 12px;border:1px solid var(--rule);resize:vertical}
+.fuss{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-top:30px;padding-top:18px;border-top:2px solid var(--ink)}
+.druckkopf{display:none}
+.drucktext{display:none}
+.nfz{display:flex;gap:18px;flex-wrap:wrap}
+.nfl span{display:block;font-weight:600;margin-bottom:6px}
+.namefeld .nfl input{width:240px}
+.hinweis2{font-size:19px;color:var(--soft);margin:10px 0 0}
+.app-tipp{background:#EAF3FB;border-left:5px solid var(--blue);padding:12px 18px;margin-bottom:22px;font-size:20px}
+.abgabe{background:#fff;border:2px solid var(--ok);padding:18px 22px;margin:26px 0 0}
+.abgabe h3{font-size:24px;margin-bottom:10px}
+.abl{list-style:none;margin:0 0 14px}
+.abl li{font-size:20px;padding:4px 0 4px 34px;position:relative}
+.abl li::before{content:"";position:absolute;left:0;top:7px;width:22px;height:22px;border:2px solid var(--rule);border-radius:4px}
+.abl li.ok::before{background:var(--ok);border-color:var(--ok)}
+.abl li.ok::after{content:"";position:absolute;left:7px;top:10px;width:7px;height:12px;border:solid #fff;border-width:0 3px 3px 0;transform:rotate(45deg)}
+textarea.code{width:100%;min-height:110px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:18px;padding:10px;border:1px solid var(--rule);margin-top:12px;word-break:break-all}
+.lehrer textarea.ein{width:100%;min-height:140px;font-size:18px;font-family:ui-monospace,Menlo,Consolas,monospace;padding:10px;border:1px solid var(--rule)}
+.lehrer .kasten{background:#fff;border:1px solid var(--rule);padding:16px 20px;margin:18px 0}
+.lehrer .kasten h3{font-size:23px;margin-bottom:8px}
+.dateiknopf2{display:inline-flex;align-items:center;position:relative;overflow:hidden;font-size:20px;font-weight:600;min-height:48px;padding:10px 22px;background:#fff;color:var(--ink);border:1px solid var(--rule);border-radius:4px;cursor:pointer}
+.dateiknopf2 input{position:absolute;inset:0;opacity:0;cursor:pointer;font-size:20px}
+.tabwrap{overflow-x:auto;background:#fff;border:1px solid var(--rule)}
+table.uebers{border-collapse:collapse;width:100%;font-size:19px;min-width:760px}
+table.uebers th,table.uebers td{border-bottom:1px solid var(--rule);padding:8px 10px;text-align:left;white-space:nowrap}
+table.uebers th{background:#EDF2F7;font-weight:600}
+table.uebers td.re,table.uebers th.re{text-align:right}
+table.uebers tr.akt td{background:#EAF3FB}
+table.uebers .rot{color:var(--red);font-weight:700} table.uebers .gruen{color:var(--ok);font-weight:700}
+table.uebers button{font-size:19px;font-weight:600;min-height:48px;padding:0 14px;border:1px solid var(--blue);color:var(--blue);background:#fff;border-radius:4px;cursor:pointer}
+.detail h3{font-size:24px;margin:20px 0 8px}
+.detail ul.fl{list-style:none} .detail ul.fl li{font-size:20px;padding:6px 12px;border-left:5px solid var(--red);background:#FBEFEC;margin-bottom:6px}
+.detail ul.fl li.h{border-left-color:var(--wood);background:#FFF6E6}
+.detail ul.fl li.g{border-left-color:var(--ok);background:#EEF6F1}
+.detail .reflt{background:#fff;border:1px solid var(--rule);padding:10px 14px;white-space:pre-wrap;font-size:20px;margin-bottom:10px}
+.leiste{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}
+
+@media (max-width:1060px){ .planer{grid-template-columns:1fr} }
+@media (max-width:760px){
+  .paar,.karten,.legende,.anl{grid-template-columns:1fr}
+  h2.tt{font-size:28px}
+  .z{flex-direction:column;gap:8px}
+  .z .btns{max-width:100%;justify-content:flex-start}
+}
+@media print{
+  @page{size:A4 portrait;margin:12mm}
+  .top,.fuss,.zeile2,.stationen,.refl .knopfzeile,.panel,.speicherzeile,.abgabe,.app-tipp{display:none!important}
+  body{background:#fff;font-size:12pt}
+  .wrap{padding:0;max-width:none}
+  .druckkopf{display:block;font-size:12pt;margin-bottom:4mm}
+  figure.abb{break-inside:avoid;border:0;padding:0}
+  .refl textarea{display:none}
+  .drucktext{display:block;border:1px solid #999;min-height:22mm;padding:2mm 3mm;white-space:pre-wrap}
+  h2.tt{font-size:20pt}
+  table.aus{font-size:11pt;margin:2mm 0} table.aus th,table.aus td{padding:1.2mm 2.5mm}
+  .refl label{font-size:11pt;margin:3mm 0 1mm} .refl h3,.wrap h3{font-size:14pt!important}
+  .merke,.ziel{font-size:11pt;padding:2mm 4mm;margin:3mm 0}
+  figure.abb svg{max-height:120mm}
+}
+</style>
+</head>
+<body>
+<div class="top"><div class="in">
+  <div class="zeile"><h1>Einrichtungsplaner: Meine erste Wohnung</h1><span class="rechts"><span class="stand" id="stand">Start</span><button class="sichern" id="sichernKnopf" aria-label="Arbeitsstand sichern">Sichern</button></span></div>
+  <div class="balken"><i id="balken"></i></div>
+  <div class="stationen" id="stationen"></div>
+</div></div>
+<div class="wrap" id="buehne"></div>
+<noscript><p style="padding:20px">Bitte JavaScript aktivieren oder den Ausschneidebogen (PDF) verwenden.</p></noscript>
+<script>
+/* ===== Gemeinsame Daten und Zeichenfunktionen (Modul + Ausschneidebogen) ===== */
+/* Alle Maße in cm, Innenmaße der Räume. Ursprung = linke obere Innenecke des Wohnzimmers. */
+const WHG = {
+  aussen: {x:-30, y:-30, w:920, h:700},
+  budget: 3000,
+  raeume: [
+    {id:'WZ', name:'Wohnzimmer',   x:0,   y:0,   w:480, h:400},
+    {id:'SZ', name:'Schlafzimmer', x:490, y:0,   w:370, h:400},
+    {id:'KU', name:'Küche',        x:0,   y:410, w:290, h:230},
+    {id:'FL', name:'Flur',         x:300, y:410, w:280, h:230},
+    {id:'BA', name:'Bad',          x:590, y:410, w:270, h:230}
+  ],
+  /* Türen: Öffnung in der Wand (ox,oy,ow,oh), Drehpunkt (hx,hy), Breite b, Schwenkbereich (sx,sy) = Quadrant,
+     durch = Durchgangszone auf der anderen Seite der Wand */
+  tueren: [
+    {name:'Wohnungstür', ox:400, oy:640, ow:90, oh:30, hx:490, hy:640, b:90, zu:[400,640], auf:[490,550], q:{x:400,y:550,w:90,h:90}, durch:null},
+    {name:'Wohnzimmertür', ox:380, oy:400, ow:80, oh:10, hx:380, hy:400, b:80, zu:[460,400], auf:[380,320], q:{x:380,y:320,w:80,h:80}, durch:{x:380,y:410,w:80,h:60}},
+    {name:'Schlafzimmertür', ox:495, oy:400, ow:80, oh:10, hx:575, hy:400, b:80, zu:[495,400], auf:[575,320], q:{x:495,y:320,w:80,h:80}, durch:{x:495,y:410,w:80,h:60}},
+    {name:'Küchentür', ox:290, oy:420, ow:10, oh:80, hx:290, hy:420, b:80, zu:[290,500], auf:[210,420], q:{x:210,y:420,w:80,h:80}, durch:{x:300,y:420,w:60,h:80}},
+    {name:'Badtür', ox:580, oy:430, ow:10, oh:80, hx:590, hy:430, b:80, zu:[590,510], auf:[670,430], q:{x:590,y:430,w:80,h:80}, durch:{x:520,y:430,w:60,h:80}}
+  ],
+  fenster: [
+    {ox:70,  oy:-30, ow:150, oh:30, zone:{x:70, y:0, w:150, h:60}, raum:'WZ'},
+    {ox:280, oy:-30, ow:150, oh:30, zone:{x:280,y:0, w:150, h:60}, raum:'WZ'},
+    {ox:600, oy:-30, ow:160, oh:30, zone:{x:600,y:0, w:160, h:60}, raum:'SZ'},
+    {ox:-30, oy:460, ow:30, oh:120, zone:{x:0, y:460, w:60, h:120}, raum:'KU'},
+    {ox:640, oy:640, ow:80, oh:30, zone:null, raum:'BA'}
+  ],
+  /* Heizkörper (im Raum an der Wand); zone = Heizkörper + 20 cm davor */
+  heizung: [
+    {x:80,  y:0,   w:130, h:10, zone:{x:80, y:0,  w:130, h:30}},
+    {x:290, y:0,   w:130, h:10, zone:{x:290,y:0,  w:130, h:30}},
+    {x:610, y:0,   w:140, h:10, zone:{x:610,y:0,  w:140, h:30}},
+    {x:0,   y:470, w:10,  h:100, zone:{x:0, y:470,w:30,  h:100}},
+    {x:590, y:550, w:10,  h:70,  zone:{x:590,y:550,w:30, h:70}}
+  ],
+  wasser: {x:120, y:640, wand:'unten', raum:'KU'},
+  tv: {x:0, y:230, wand:'links'},
+  steckdosen: [[0,120,'l'],[0,330,'l'],[470,0,'o'],[180,400,'u'],[490,250,'l'],[860,120,'r'],[860,320,'r'],[290,600,'r'],[60,640,'u'],[590,470,'l']],
+  /* fest eingebaute Sanitärobjekte */
+  fest: [
+    {typ:'dusche', name:'Dusche', x:770, y:410, w:90, d:90, rot:0},
+    {typ:'wc', name:'WC', x:795, y:520, w:40, d:65, rot:90},
+    {typ:'waschbecken', name:'Waschbecken', x:680, y:410, w:60, d:45, rot:0}
+  ]
+};
+
+/* Möbelkatalog: w = Breite (Rückseite), d = Tiefe; vorn = Bewegungsfläche vor der Vorderseite; seite = Bewegungsfläche an einer Längsseite (Bett) */
+const KATALOG = [
+  {id:'bett90',  typ:'bett', name:'Einzelbett', w:90,  d:200, preis:129, raum:'SZ', seite:60, gruppe:'Schlafen'},
+  {id:'bett140', typ:'bett', name:'Doppelbett 1,40 m', w:140, d:200, preis:249, raum:'SZ', seite:60, gruppe:'Schlafen'},
+  {id:'bett160', typ:'bett', name:'Doppelbett 1,60 m', w:160, d:200, preis:299, raum:'SZ', seite:60, gruppe:'Schlafen'},
+  {id:'nacht',   typ:'nacht', name:'Nachttisch', w:45, d:40, preis:35, raum:'SZ', gruppe:'Schlafen'},
+  {id:'schrank100', typ:'schrank', name:'Kleiderschrank, 2 Türen', w:100, d:60, preis:149, raum:'SZ', vorn:90, hoch:true, gruppe:'Schlafen'},
+  {id:'schrank150', typ:'schrank', name:'Kleiderschrank, 3 Türen', w:150, d:60, preis:229, raum:'SZ', vorn:90, hoch:true, gruppe:'Schlafen'},
+  {id:'kommode', typ:'kommode', name:'Kommode', w:80, d:45, preis:89, raum:'SZ', vorn:70, gruppe:'Schlafen'},
+  {id:'schreibtisch', typ:'schreibtisch', name:'Schreibtisch', w:120, d:60, preis:99, raum:'SZ', gruppe:'Schlafen'},
+  {id:'buerostuhl', typ:'buerostuhl', name:'Schreibtischstuhl', w:60, d:60, preis:79, raum:'SZ', gruppe:'Schlafen'},
+  {id:'sofa',    typ:'sofa', name:'Sofa (3-Sitzer)', w:210, d:90, preis:399, raum:'WZ', gruppe:'Wohnen'},
+  {id:'sessel',  typ:'sessel', name:'Sessel', w:80, d:85, preis:149, raum:'WZ', gruppe:'Wohnen'},
+  {id:'couchtisch', typ:'couchtisch', name:'Couchtisch', w:100, d:60, preis:59, raum:'WZ', gruppe:'Wohnen'},
+  {id:'tvboard', typ:'tvboard', name:'TV-Board', w:160, d:40, preis:99, raum:'WZ', gruppe:'Wohnen'},
+  {id:'regal',   typ:'regal', name:'Regal', w:80, d:35, preis:49, raum:'WZ', vorn:70, hoch:true, gruppe:'Wohnen'},
+  {id:'esstisch', typ:'esstisch', name:'Esstisch', w:120, d:80, preis:129, raum:'WZ', gruppe:'Wohnen'},
+  {id:'stuhl',   typ:'stuhl', name:'Stuhl', w:45, d:50, preis:29, raum:'WZ', gruppe:'Wohnen'},
+  {id:'kueche',  typ:'kueche', name:'Küchenzeile mit Spüle und Herd', w:210, d:60, preis:799, raum:'KU', vorn:120, wasser:true, gruppe:'Küche, Flur, Bad'},
+  {id:'kuehl',   typ:'kuehl', name:'Kühlschrank', w:60, d:60, preis:299, raum:'KU', vorn:90, hoch:true, gruppe:'Küche, Flur, Bad'},
+  {id:'garderobe', typ:'garderobe', name:'Garderobe', w:100, d:35, preis:69, raum:'FL', vorn:70, hoch:true, gruppe:'Küche, Flur, Bad'},
+  {id:'schuh',   typ:'kommode', name:'Schuhschrank', w:80, d:35, preis:59, raum:'FL', vorn:60, gruppe:'Küche, Flur, Bad'},
+  {id:'wm',      typ:'wm', name:'Waschmaschine', w:60, d:60, preis:349, raum:'BA', vorn:90, gruppe:'Küche, Flur, Bad'}
+];
+const KAT = Object.fromEntries(KATALOG.map(k=>[k.id,k]));
+
+const MUSS = [
+  {text:'ein Bett', ok:p=>p.some(x=>KAT[x.k].typ==='bett')},
+  {text:'ein Kleiderschrank', ok:p=>p.some(x=>KAT[x.k].typ==='schrank')},
+  {text:'Küchenzeile und Kühlschrank', ok:p=>p.some(x=>x.k==='kueche')&&p.some(x=>x.k==='kuehl')},
+  {text:'eine Waschmaschine', ok:p=>p.some(x=>x.k==='wm')},
+  {text:'ein Sofa oder ein Sessel', ok:p=>p.some(x=>x.k==='sofa'||x.k==='sessel')},
+  {text:'ein Esstisch mit mindestens 2 Stühlen', ok:p=>p.some(x=>x.k==='esstisch')&&p.filter(x=>x.k==='stuhl').length>=2}
+];
+
+/* ---------- Hilfsfunktionen ---------- */
+function euro(n){return n.toLocaleString('de-DE')+' €';}
+function meter(cm){return (cm/100).toFixed(2).replace('.',',');}
+function flaeche(r){return (r.w*r.h/10000).toFixed(2).replace('.',',');}
+function bbox(p){const k=p.fest?p:KAT[p.k];const q=(p.rot%180)!==0;return {x:p.x,y:p.y,w:q?k.d:k.w,h:q?k.w:k.d};}
+function schneidet(a,b){return a.x<b.x+b.w-0.01&&b.x<a.x+a.w-0.01&&a.y<b.y+b.h-0.01&&b.y<a.y+a.h-0.01;}
+function innen(a,r){return a.x>=r.x-0.01&&a.y>=r.y-0.01&&a.x+a.w<=r.x+r.w+0.01&&a.y+a.h<=r.y+r.h+0.01;}
+function raumVon(b){return WHG.raeume.find(r=>innen(b,r));}
+/* Zone vor der Vorderseite (rot 0: vorn = unten) */
+function vornZone(b,rot,z){
+  if(rot===0)return{x:b.x,y:b.y+b.h,w:b.w,h:z};
+  if(rot===90)return{x:b.x-z,y:b.y,w:z,h:b.h};
+  if(rot===180)return{x:b.x,y:b.y-z,w:b.w,h:z};
+  return{x:b.x+b.w,y:b.y,w:z,h:b.h};
+}
+/* Zonen an den Längsseiten (für Betten) */
+function seitenZonen(b,rot,z){
+  if(rot%180===0)return[{x:b.x-z,y:b.y,w:z,h:b.h},{x:b.x+b.w,y:b.y,w:z,h:b.h}];
+  return[{x:b.x,y:b.y-z,w:b.w,h:z},{x:b.x,y:b.y+b.h,w:b.w,h:z}];
+}
+/* Rechteck berührt Viertelkreis der Tür? */
+function imSchwenk(b,t){
+  const q=t.q; if(!schneidet(b,q))return false;
+  const ix=Math.max(b.x,q.x), iy=Math.max(b.y,q.y), ax=Math.min(b.x+b.w,q.x+q.w), ay=Math.min(b.y+b.h,q.y+q.h);
+  const cx=Math.min(Math.max(t.hx,ix),ax), cy=Math.min(Math.max(t.hy,iy),ay);
+  return Math.hypot(cx-t.hx,cy-t.hy)<t.b-0.5;
+}
+
+/* ---------- Sinnbilder (lokal: Breite w nach rechts, Tiefe d nach unten, Rückseite oben) ---------- */
+const ST='#16232E';
+function sinnbild(typ,w,d,fill){
+  fill=fill||'#E7EEF4';
+  const R=(x,y,a,b,f,sw,rx)=>`<rect x="${x}" y="${y}" width="${a}" height="${b}" fill="${f||'none'}" stroke="${ST}" stroke-width="${sw||1.5}"${rx?` rx="${rx}"`:''}/>`;
+  const L=(x1,y1,x2,y2,sw)=>`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${ST}" stroke-width="${sw||1.5}"/>`;
+  const C=(cx,cy,r,f)=>`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${f||'none'}" stroke="${ST}" stroke-width="1.5"/>`;
+  let s=R(0,0,w,d,fill,2.5);
+  switch(typ){
+    case 'bett':{
+      const n=w>=130?2:1, pw=(w-12-(n-1)*6)/n;
+      for(let i=0;i<n;i++)s+=R(6+i*(pw+6),8,pw,30,'#fff',1.5,6);
+      s+=L(0,48,w,48)+`<path d="M ${w*0.45} ${d} L ${w} ${d*0.72}" stroke="${ST}" stroke-width="1.5" fill="none"/>`;break;}
+    case 'nacht': s+=C(w/2,d/2,Math.min(w,d)*0.25,'#fff');break;
+    case 'schrank':{const n=Math.round(w/50);for(let i=1;i<n;i++)s+=L(w*i/n,0,w*i/n,d-8);s+=L(0,d-8,w,d-8);break;}
+    case 'kommode': s+=L(0,d-7,w,d-7)+L(w/2,0,w/2,d-7,1);break;
+    case 'schreibtisch': s+=R(w/2-25,6,50,8,'#fff',1.5);break;
+    case 'buerostuhl': s=C(w/2,d/2+4,w*0.36,fill)+`<path d="M ${w*0.12} ${d*0.32} Q ${w/2} ${-d*0.06} ${w*0.88} ${d*0.32}" fill="none" stroke="${ST}" stroke-width="4"/>`;break;
+    case 'sofa': s+=R(0,0,w,20,'#C9D6E2',1.5)+R(0,0,20,d,'#C9D6E2',1.5)+R(w-20,0,20,d,'#C9D6E2',1.5);
+      for(let i=1;i<3;i++)s+=L(20+(w-40)*i/3,20,20+(w-40)*i/3,d,1);break;
+    case 'sessel': s+=R(0,0,w,18,'#C9D6E2',1.5)+R(0,0,16,d,'#C9D6E2',1.5)+R(w-16,0,16,d,'#C9D6E2',1.5);break;
+    case 'couchtisch': s=R(0,0,w,d,fill,2.5,14);break;
+    case 'tvboard': s+=R(w*0.2,4,w*0.6,6,'#16232E',0);break;
+    case 'regal': for(let i=1;i<4;i++)s+=L(w*i/4,0,w*i/4,d,1);s+=L(0,0,w,d,1);break;
+    case 'esstisch': break;
+    case 'stuhl': s+=R(0,0,w,9,'#C9D6E2',1.5);break;
+    case 'kueche': s+=L(0,d-7,w,d-7)+R(20,10,55,38,'#fff',1.5,6)+C(47,29,4)
+      +C(w-75,20,8)+C(w-45,20,10)+C(w-75,44,10)+C(w-45,44,8)+L(w/2+5,0,w/2+5,d-7,1);break;
+    case 'kuehl': {const cx=w/2,cy=(d-7)/2,r=Math.min(w,d)*0.28;s+=L(0,d-7,w,d-7);for(let a=0;a<3;a++){const t=a*Math.PI/3;s+=L(cx-r*Math.cos(t),cy-r*Math.sin(t),cx+r*Math.cos(t),cy+r*Math.sin(t),2);}break;}
+    case 'wm': s+=C(w/2,d/2+3,Math.min(w,d)*0.3,'#fff')+L(0,10,w,10,1);break;
+    case 'garderobe': for(let i=1;i<5;i++)s+=C(w*i/5,9,3,'#16232E');s+=L(0,d-6,w,d-6,1);break;
+    case 'dusche': s+=L(0,0,w,d,1)+L(w,0,0,d,1)+C(w/2,d/2,5,'#fff');break;
+    case 'wc': s=R(w*0.1,0,w*0.8,16,fill,2)+`<ellipse cx="${w/2}" cy="${d*0.6}" rx="${w*0.42}" ry="${d*0.36}" fill="${fill}" stroke="${ST}" stroke-width="2"/>`;break;
+    case 'waschbecken': s+=`<ellipse cx="${w/2}" cy="${d*0.55}" rx="${w*0.34}" ry="${d*0.3}" fill="#fff" stroke="${ST}" stroke-width="1.5"/>`;break;
+  }
+  return s;
+}
+function drehTransform(x,y,w,d,rot){
+  if(rot===0)return `translate(${x} ${y})`;
+  if(rot===90)return `translate(${x+d} ${y}) rotate(90)`;
+  if(rot===180)return `translate(${x+w} ${y+d}) rotate(180)`;
+  return `translate(${x} ${y+w}) rotate(270)`;
+}
+
+/* ---------- Grundriss als SVG-Inhalt ---------- */
+function grundrissSVG(opt){
+  opt=opt||{};
+  const A=WHG.aussen; let s='';
+  s+=`<rect x="${A.x}" y="${A.y}" width="${A.w}" height="${A.h}" fill="${ST}"/>`;
+  for(const r of WHG.raeume){
+    s+=`<rect x="${r.x}" y="${r.y}" width="${r.w}" height="${r.h}" fill="${r.id==='BA'?'#F3F6F8':'#fff'}"/>`;
+  }
+  if(opt.raster){
+    for(const r of WHG.raeume){
+      let g='';
+      for(let x=r.x+50;x<r.x+r.w;x+=50)g+=`<line x1="${x}" y1="${r.y}" x2="${x}" y2="${r.y+r.h}"/>`;
+      for(let y=r.y+50;y<r.y+r.h;y+=50)g+=`<line x1="${r.x}" y1="${y}" x2="${r.x+r.w}" y2="${y}"/>`;
+      s+=`<g stroke="#DCE3E8" stroke-width="1">${g}</g>`;
+    }
+  }
+  for(const r of WHG.raeume){
+    const cx=r.x+r.w/2, cy=r.y+r.h/2;
+    s+=`<text x="${cx}" y="${cy-4}" font-size="${opt.gross?30:26}" text-anchor="middle" fill="#9AA8B2" font-weight="bold">${r.name}</text>`;
+    s+=`<text x="${cx}" y="${cy+(opt.gross?30:26)}" font-size="${opt.gross?26:22}" text-anchor="middle" fill="#9AA8B2">${flaeche(r)} m²</text>`;
+  }
+  for(const f of WHG.fenster){
+    s+=`<rect x="${f.ox}" y="${f.oy}" width="${f.ow}" height="${f.oh}" fill="#fff" stroke="${ST}" stroke-width="1.5"/>`;
+    if(f.ow>f.oh)s+=`<line x1="${f.ox}" y1="${f.oy+f.oh/2}" x2="${f.ox+f.ow}" y2="${f.oy+f.oh/2}" stroke="${ST}" stroke-width="1.5"/>`;
+    else s+=`<line x1="${f.ox+f.ow/2}" y1="${f.oy}" x2="${f.ox+f.ow/2}" y2="${f.oy+f.oh}" stroke="${ST}" stroke-width="1.5"/>`;
+  }
+  for(const t of WHG.tueren){
+    s+=`<rect x="${t.ox}" y="${t.oy}" width="${t.ow}" height="${t.oh}" fill="#fff"/>`;
+    s+=`<line x1="${t.hx}" y1="${t.hy}" x2="${t.auf[0]}" y2="${t.auf[1]}" stroke="${ST}" stroke-width="3"/>`;
+    const sweep=bogenRichtung(t);
+    s+=`<path d="M ${t.zu[0]} ${t.zu[1]} A ${t.b} ${t.b} 0 0 ${sweep} ${t.auf[0]} ${t.auf[1]}" fill="none" stroke="${ST}" stroke-width="1.5" stroke-dasharray="6 4"/>`;
+  }
+  for(const h of WHG.heizung){
+    s+=`<rect x="${h.x}" y="${h.y}" width="${h.w}" height="${h.h}" fill="#F3B9A9" stroke="${ST}" stroke-width="1.5"/>`;
+  }
+  /* Steckdosen */
+  for(const [x,y] of WHG.steckdosen){
+    s+=`<g><circle cx="${x}" cy="${y}" r="8" fill="#fff" stroke="${ST}" stroke-width="2"/><line x1="${x-4}" y1="${y}" x2="${x+4}" y2="${y}" stroke="${ST}" stroke-width="2"/></g>`;
+  }
+  /* Wasseranschluss + TV */
+  const W=WHG.wasser;
+  s+=`<g><circle cx="${W.x}" cy="${W.y-12}" r="12" fill="#2F7EC1"/><text x="${W.x}" y="${W.y-5}" font-size="18" font-weight="bold" text-anchor="middle" fill="#fff">W</text></g>`;
+  s+=`<g><rect x="${WHG.tv.x+2}" y="${WHG.tv.y-12}" width="26" height="24" fill="#6B4FA0"/><text x="${WHG.tv.x+15}" y="${WHG.tv.y+6}" font-size="16" font-weight="bold" text-anchor="middle" fill="#fff">TV</text></g>`;
+  /* feste Sanitärobjekte */
+  for(const f of WHG.fest){
+    s+=`<g transform="${drehTransform(f.x,f.y,f.w,f.d,f.rot)}">${sinnbild(f.typ,f.w,f.d,'#fff')}</g>`;
+  }
+  if(opt.masse){
+    const m=(x1,y1,x2,y2,t,vert)=>{
+      let g=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="#1F5F9E" stroke-width="1.5"/>`;
+      const tk=(x,y)=>`<line x1="${x-6}" y1="${y+6}" x2="${x+6}" y2="${y-6}" stroke="#1F5F9E" stroke-width="2"/>`;
+      g+=tk(x1,y1)+tk(x2,y2);
+      if(vert)g+=`<text x="${x1-8}" y="${(y1+y2)/2}" font-size="22" fill="#1F5F9E" text-anchor="middle" transform="rotate(-90 ${x1-8} ${(y1+y2)/2})">${t}</text>`;
+      else g+=`<text x="${(x1+x2)/2}" y="${y1-8}" font-size="22" fill="#1F5F9E" text-anchor="middle">${t}</text>`;
+      return g;
+    };
+    s+=m(0,-48,480,-48,'4,80')+m(490,-48,860,-48,'3,70');
+    s+=m(-48,0,-48,400,'4,00',true)+m(-48,410,-48,640,'2,30',true);
+    s+=m(0,700,290,700,'2,90')+m(300,700,580,700,'2,80')+m(590,700,860,700,'2,70');
+  }
+  return s;
+}
+function bogenRichtung(t){
+  /* Kreuzprodukt entscheidet über Drehsinn des Bogens von "zu" nach "auf" */
+  const ax=t.zu[0]-t.hx, ay=t.zu[1]-t.hy, bx=t.auf[0]-t.hx, by=t.auf[1]-t.hy;
+  return (ax*by-ay*bx)>0?1:0;
+}
+function moebelSVG(p,opt){
+  opt=opt||{};
+  const k=KAT[p.k], b=bbox(p);
+  let s=`<g transform="${drehTransform(p.x,p.y,k.w,k.d,p.rot)}">${sinnbild(k.typ,k.w,k.d,opt.fill)}</g>`;
+  if(opt.label!==false){
+    const kurz=k.kurz||k.name.split(/[ ,(]/)[0];
+    const hoch=b.h>b.w;
+    const lang=hoch?b.h:b.w, quer=hoch?b.w:b.h;
+    let fs=Math.min(22, quer*0.5, lang/(kurz.length*0.62));
+    if(fs>=11){
+      const cx=b.x+b.w/2, cy=b.y+b.h/2;
+      s+=`<text x="${cx}" y="${cy+fs*0.35}" font-size="${fs.toFixed(1)}" text-anchor="middle" fill="${ST}" font-weight="600" paint-order="stroke" stroke="#fff" stroke-width="4" ${hoch?`transform="rotate(-90 ${cx} ${cy})"`:''}>${kurz}</text>`;
+    }
+  }
+  return s;
+}
+
+/* ---------- Planprüfung ---------- */
+function pruefePlan(P){
+  const fehler=[], hinweise=[], gut=[];
+  const stuhlArt=x=>x==='stuhl'||x==='buerostuhl';
+  const tisch=x=>x==='esstisch'||x==='schreibtisch'||x==='couchtisch';
+  const name=p=>KAT[p.k].name;
+  const festB=WHG.fest.map(f=>({fest:true,name:f.name,...f,b:bbox({...f,fest:true,w:f.w,d:f.d})}));
+  const alle=P.map(p=>({p,b:bbox(p)}));
+  const raumOk=new Set();
+  alle.forEach(({p,b},i)=>{
+    const k=KAT[p.k], r=raumVon(b);
+    if(!r){fehler.push({i,t:`${name(p)}: steht in einer Wand oder ragt in einen anderen Raum.`});return;}
+    raumOk.add(i);
+    // Überlappung
+    alle.forEach((o,j)=>{
+      if(j<=i)return;
+      if(schneidet(b,o.b)){
+        const a=p.k,c=o.p.k;
+        if((stuhlArt(a)&&tisch(c))||(stuhlArt(c)&&tisch(a)))return;
+        fehler.push({i,j,t:`${name(p)} und ${name(o.p)} überlappen sich.`});
+      }
+    });
+    for(const f of festB) if(schneidet(b,f.b)) fehler.push({i,t:`${name(p)} steht auf ${f.name==='WC'?'dem WC':f.name==='Dusche'?'der Dusche':'dem Waschbecken'}.`});
+    // Türen
+    for(const t of WHG.tueren){
+      if(imSchwenk(b,t)){fehler.push({i,t:`${name(p)} steht im Schwenkbereich der ${t.name} – die Tür geht nicht ganz auf.`});}
+      else if(t.durch&&schneidet(b,t.durch)){fehler.push({i,t:`${name(p)} versperrt den Durchgang zur ${t.name}.`});}
+    }
+    // Heizkörper
+    for(const h of WHG.heizung) if(schneidet(b,h.zone)) fehler.push({i,t:`${name(p)} steht vor dem Heizkörper – die Wärme kommt nicht in den Raum.`});
+    // Fenster
+    if(k.hoch) for(const f of WHG.fenster) if(f.zone&&schneidet(b,f.zone)) fehler.push({i,t:`${name(p)} ist hoch und verdeckt das Fenster.`});
+    // Bewegungsfläche vorn
+    const frei=z=>innen(z,r)&&!alle.some((o,j)=>j!==i&&schneidet(z,o.b)&&!(stuhlArt(o.p.k)&&tisch(p.k)))&&!festB.some(f=>schneidet(z,f.b));
+    if(k.vorn){
+      const z=vornZone(b,p.rot,k.vorn);
+      if(!frei(z)) fehler.push({i,t:`Vor „${k.name}“ fehlen ${k.vorn} cm Bewegungsfläche – die Vorderseite zeigt zur Wand oder etwas steht im Weg.`});
+    }
+    if(k.seite){
+      const zs=seitenZonen(b,p.rot,k.seite).map(frei);
+      if(!zs[0]&&!zs[1]) fehler.push({i,t:`${name(p)}: An keiner Längsseite sind ${k.seite} cm frei – man kommt nicht ins Bett.`});
+      else if(k.w>=140&&!(zs[0]&&zs[1])) hinweise.push({i,t:`${name(p)}: Nur eine Längsseite ist frei. Für zwei Personen besser von beiden Seiten zugänglich.`});
+    }
+    // Anschlüsse
+    if(k.wasser){
+      const W=WHG.wasser;
+      const ok=r.id===W.raum&&p.rot===180&&Math.abs(b.y+b.h-W.y)<1&&W.x>b.x&&W.x<b.x+b.w;
+      if(!ok) fehler.push({i,t:`Küchenzeile: Die Spüle braucht den Wasseranschluss (W). Rückseite an die Wand mit dem W stellen.`});
+    }
+    if(p.k==='wm'&&r.id!=='BA') fehler.push({i,t:`Waschmaschine: Sie braucht Wasser und Abfluss – sie gehört ins Bad.`});
+    if(p.k==='kuehl'&&r.id!=='KU') hinweise.push({i,t:`Kühlschrank: Er steht nicht in der Küche. Ist das praktisch?`});
+    if(k.typ==='bett'&&r.id!=='SZ') hinweise.push({i,t:`${name(p)}: Das Bett steht nicht im Schlafzimmer.`});
+    if(p.k==='tvboard'&&!(r.id==='WZ'&&Math.hypot(Math.max(b.x-WHG.tv.x,0),Math.max(Math.abs(b.y+b.h/2-WHG.tv.y)-b.h/2,0))<40)) hinweise.push({i,t:`TV-Board: Es steht nicht am Antennenanschluss (TV).`});
+    if(p.k==='schreibtisch'){
+      const nahFenster=WHG.fenster.some(f=>f.zone&&f.raum===r.id&&Math.hypot(Math.max(f.zone.x-(b.x+b.w),b.x-(f.zone.x+f.zone.w),0),Math.max(f.zone.y-(b.y+b.h),b.y-(f.zone.y+f.zone.h),0))<60);
+      if(!nahFenster) hinweise.push({i,t:`Schreibtisch: Er steht weit weg vom Fenster – wenig Tageslicht.`});
+    }
+  });
+  const summe=P.reduce((s,p)=>s+KAT[p.k].preis,0);
+  if(summe>WHG.budget) fehler.push({t:`Budget überschritten: ${euro(summe)} statt höchstens ${euro(WHG.budget)}.`});
+  MUSS.forEach(m=>{ if(!m.ok(P)) fehler.push({t:`Es fehlt noch: ${m.text}.`}); });
+  return {fehler,hinweise,summe};
+}
+
+</script>
+<script>
+/* ===== Selbstlernmodul Einrichtungsplan 1.1 ===== */
+const SPEICHER='einrichtungsplan-wohnung-v1';
+let S={name:'',kuerzel:'',klasse:'',P:[],fertig:[],refl:{},antw:{},station:-1,zeit:0};
+let speicherOk=true;
+let FRUEHER=false;
+function lade(){try{const t=localStorage.getItem(SPEICHER);if(t){S=Object.assign(S,JSON.parse(t));FRUEHER=true;}}catch(e){speicherOk=false;}if(!S.antw)S.antw={};}
+function sichere(){S.zeit=Date.now();try{localStorage.setItem(SPEICHER,JSON.stringify(S));speicherOk=true;}catch(e){speicherOk=false;}return speicherOk;}
+function uhr(t){const d=new Date(t);return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit'})+', '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';}
+/* Zwischenspeichern mit sichtbarer Rückmeldung */
+function zwischenspeichern(anzeige){
+  const ok=sichere();
+  if(anzeige){anzeige.className='gesp '+(ok?'ja':'nein');
+    anzeige.textContent=ok?'Gespeichert: '+uhr(S.zeit):'Nicht gespeichert! Oben auf „Sichern“ tippen und als Datei sichern.';}
+  return ok;
+}
+function speicherKnopf(text){
+  const w=el('span','speicherzeile'); const b=el('button','knopf zweit',text||'Zwischenspeichern'); const s=el('span','gesp');
+  b.onclick=()=>zwischenspeichern(s); w.append(b,s); return w;
+}
+const $=(s,r)=>(r||document).querySelector(s);
+const esc=t=>String(t==null?'':t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const IM_RAHMEN=(()=>{try{return window.top!==window;}catch(e){return true;}})();
+function wer(){return (S.kuerzel||'').trim()+(S.klasse?' · Klasse '+S.klasse.trim():'');}
+const el=(tag,cls,html)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(html!==undefined)e.innerHTML=html;return e;};
+function mischen(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function zahl(t){t=String(t).replace(/\s|€|cm|m²|m/g,'').replace(/\.(?=\d{3}(\D|$))/g,'').replace(',','.');return parseFloat(t);}
+
+/* kleines Sinnbild als eigenständiges SVG */
+function sbSVG(id,opt){
+  const k=KAT[id]||opt; const w=k.w,d=k.d,p=14;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-p} ${-p} ${w+2*p} ${d+2*p}" aria-hidden="true">${sinnbild(k.typ,w,d)}</svg>`;
+}
+function grundrissFigur(opt){
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-75 -78 980 800" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="Grundriss der Wohnung">${grundrissSVG(Object.assign({masse:true,gross:true},opt||{}))}${(opt&&opt.moebel)||''}</svg>`;
+}
+
+/* ---------- Stationen ---------- */
+const SB_TAB=['bett90','bett140','schrank100','sofa','esstisch','stuhl','kueche','kuehl','wm'];
+const STATIONEN=[
+{nr:1,titel:'Sinnbilder im Einrichtungsplan',dauer:'etwa 15 Minuten',
+ ziel:'Du erkennst die Sinnbilder für Möbel und rechnest Möbelmaße in den Maßstab 1 : 50 um.',
+ info:()=>`
+<p>Im <b>Einrichtungsplan</b> wird die Möblierung auf dem Grundriss geplant – <b>bevor</b> Möbel gekauft werden.
+Die Möbel erscheinen als <b>Sinnbilder</b>: Man sieht sie <b>von oben</b>, stark vereinfacht. Alle Sinnbilder
+haben denselben <b>Maßstab</b> wie der Grundriss, meist <b>1 : 50</b>. Dann sind 2 cm im Plan 1 m in Wirklichkeit.</p>
+<h3>Wichtige Sinnbilder</h3>
+<table class="tab"><tr><th>Sinnbild</th><th>Möbel</th><th>Maße (Breite × Tiefe)</th><th>im Plan 1 : 50</th></tr>
+${SB_TAB.map(id=>{const k=KAT[id];return `<tr><td class="sb">${sbSVG(id)}</td><td>${k.name}</td><td>${meter(k.w)} m × ${meter(k.d)} m</td><td>${String(k.w/50).replace('.',',')} cm × ${String(k.d/50).replace('.',',')} cm</td></tr>`;}).join('')}
+</table>
+<h3>Breite und Tiefe</h3>
+<ul>
+<li><b>Breite</b> = Vorderseite, also die Seite, an der man das Möbel benutzt.</li>
+<li><b>Tiefe</b> = von der Vorderseite bis zur Wand.</li>
+<li>Beim Bett gibt man Breite × Länge an, z. B. 1,40 m × 2,00 m.</li>
+</ul>`,
+ merke:'Sinnbilder zeigen Möbel von oben. Sie haben denselben Maßstab wie der Grundriss, im Einrichtungsplan meist 1 : 50: 2 cm im Plan sind 1 m in Wirklichkeit. Möbelmaße: Breite × Tiefe.',
+ heft:['Überschrift: <b>Sinnbilder im Einrichtungsplan</b>','Schreibe den Merksatz ab.','Zeichne die Sinnbilder für Bett, Kleiderschrank und Sofa im Maßstab 1 : 50 auf Karopapier.'],
+ aufgaben:[
+  {typ:'match',frage:'Welches Sinnbild ist welches Möbel?',hinweis:'Tippe links ein Sinnbild an und danach rechts den passenden Namen.',
+   paare:[[sbSVG('bett140'),'Doppelbett'],[sbSVG('schrank150'),'Kleiderschrank'],[sbSVG('sofa'),'Sofa'],[sbSVG('kueche'),'Küchenzeile mit Spüle und Herd'],[sbSVG('wm'),'Waschmaschine'],[sbSVG('buerostuhl'),'Schreibtischstuhl']],
+   tipp:'Achte auf Kopfkissen, Schranktüren, Rückenlehne, Spülbecken und Kochfeld.'},
+  {typ:'rechnen',frage:'Rechne in den Maßstab 1 : 50 um.',hinweis:'Trage nur die Zahl ein. Achte auf die Einheit hinter dem Feld.',
+   items:[['Ein Kleiderschrank ist 1,50 m breit. Wie breit zeichnest du ihn?',3,'cm','1,5 m × 2 cm = 3 cm'],
+          ['Ein Sofa ist 2,10 m breit. Wie breit zeichnest du es?',4.2,'cm','2,1 m × 2 cm = 4,2 cm'],
+          ['Das Wohnzimmer ist 4,80 m breit. Wie breit wird es im Plan?',9.6,'cm','4,8 m × 2 cm = 9,6 cm'],
+          ['Im Plan ist ein Bett 4 cm lang. Wie lang ist es in Wirklichkeit?',2,'m','4 cm : 2 cm = 2 m'],
+          ['Im Plan ist ein Tisch 1,6 cm tief. Wie tief ist er wirklich?',80,'cm','1,6 cm × 50 = 80 cm']],
+   tipp:'1 : 50 bedeutet: 1 m in Wirklichkeit = 2 cm im Plan.'}
+ ]},
+{nr:2,titel:'Bewegungsflächen und Planungsregeln',dauer:'etwa 20 Minuten',
+ ziel:'Du weißt, wie viel Platz vor Möbeln frei bleiben muss, und kennst die wichtigsten Regeln für einen Einrichtungsplan.',
+ info:()=>`
+<p>Möbel brauchen Platz <b>davor</b>: zum Öffnen der Türen, zum Hinsetzen, zum Arbeiten und zum Vorbeigehen.
+Diesen freien Platz nennt man <b>Bewegungsfläche</b>. In der Bewegungsfläche darf kein anderes Möbelstück stehen.
+Bewegungsflächen verschiedener Möbel dürfen sich aber überlappen.</p>
+<figure class="abb"><svg xmlns="http://www.w3.org/2000/svg" viewBox="-20 -20 760 305" font-family="Helvetica, Arial, sans-serif" role="img" aria-label="Bewegungsflächen vor einem Schrank und neben einem Bett">
+<defs><pattern id="schr" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="#E3F1E8"/><line x1="0" y1="0" x2="0" y2="14" stroke="#2E7D4F" stroke-width="3"/></pattern></defs>
+<rect x="-20" y="-20" width="760" height="20" fill="#16232E"/>
+<g>${sinnbild('schrank',150,60)}</g>
+<rect x="0" y="60" width="150" height="90" fill="url(#schr)" stroke="#2E7D4F" stroke-width="2"/>
+<text x="75" y="186" font-size="22" text-anchor="middle" fill="#2E7D4F" font-weight="bold">90 cm</text>
+<text x="75" y="214" font-size="20" text-anchor="middle" fill="#16232E">vor dem Schrank</text>
+<g transform="translate(260 0)">${sinnbild('kueche',210,60)}</g>
+<rect x="260" y="60" width="210" height="120" fill="url(#schr)" stroke="#2E7D4F" stroke-width="2"/>
+<text x="365" y="210" font-size="22" text-anchor="middle" fill="#2E7D4F" font-weight="bold">120 cm</text>
+<text x="365" y="238" font-size="20" text-anchor="middle" fill="#16232E">vor der Küchenzeile</text>
+<g transform="translate(560 0)">${sinnbild('bett',90,200)}</g>
+<rect x="650" y="0" width="60" height="200" fill="url(#schr)" stroke="#2E7D4F" stroke-width="2"/>
+<text x="680" y="240" font-size="22" text-anchor="middle" fill="#2E7D4F" font-weight="bold">60 cm</text>
+<text x="640" y="268" font-size="20" text-anchor="middle" fill="#16232E">neben dem Bett</text>
+</svg><figcaption>Grün schraffiert: Bewegungsflächen. Dort darf nichts stehen.</figcaption></figure>
+<h3>Richtwerte für die Planung</h3>
+<table class="tab"><tr><th>Möbel</th><th>frei lassen</th><th>warum?</th></tr>
+<tr><td>Küchenzeile</td><td>120 cm davor</td><td>arbeiten, Backofen und Schränke öffnen</td></tr>
+<tr><td>Kleiderschrank</td><td>90 cm davor</td><td>Türen öffnen, Kleidung herausnehmen</td></tr>
+<tr><td>Kühlschrank, Waschmaschine</td><td>90 cm davor</td><td>Tür öffnen, einräumen</td></tr>
+<tr><td>Kommode, Regal, Garderobe</td><td>60 bis 70 cm davor</td><td>Schubladen ziehen, davor stehen</td></tr>
+<tr><td>Bett</td><td>60 cm an einer Längsseite</td><td>ins Bett steigen, Bett beziehen</td></tr>
+</table>
+<h3>Planungsregeln</h3>
+<ul>
+<li>Türen gehen ganz auf: Im Viertelkreis der Tür steht nichts. Durchgänge bleiben frei.</li>
+<li>Heizkörper bleiben frei: mindestens 20 cm Abstand.</li>
+<li>Hohe Möbel (Schrank, Regal, Kühlschrank) stehen nicht vor Fenstern.</li>
+<li>Anschlüsse beachten: Spüle an den Wasseranschluss, Waschmaschine ins Bad, Fernseher an den Antennenanschluss.</li>
+<li>Die Vorderseite zeigt in den Raum, die Rückseite an die Wand.</li>
+</ul>`,
+ merke:'Vor Möbeln bleibt eine Bewegungsfläche frei: 120 cm vor der Küchenzeile, 90 cm vor Schränken, 60 cm neben dem Bett. Türen, Durchgänge, Fenster und Heizkörper bleiben frei. Anschlüsse bestimmen, wo Spüle und Waschmaschine stehen.',
+ heft:['Überschrift: <b>Bewegungsflächen und Planungsregeln</b>','Schreibe den Merksatz ab.','Zeichne einen Schrank im Maßstab 1 : 50 und schraffiere seine Bewegungsfläche.'],
+ aufgaben:[
+  {typ:'rf',frage:'Richtig oder falsch?',hinweis:'Entscheide bei jeder Aussage. Nach dem Prüfen erscheint die Begründung.',
+   items:[['Vor einem Kleiderschrank sollten etwa 90 cm frei bleiben.',true,'Richtig: So lassen sich die Türen öffnen und man kann davor stehen.'],
+          ['Bewegungsflächen von zwei Möbeln dürfen sich nicht überlappen.',false,'Falsch: Sie dürfen sich überlappen – nur Möbel dürfen dort nicht stehen.'],
+          ['Ein Regal darf vor dem Heizkörper stehen, wenn es niedrig ist.',false,'Falsch: Heizkörper bleiben immer frei, sonst kommt die Wärme nicht in den Raum.'],
+          ['Die Spüle der Küchenzeile muss am Wasseranschluss stehen.',true,'Richtig: Ohne Wasseranschluss und Abfluss funktioniert keine Spüle.'],
+          ['Ein Kleiderschrank vor dem Fenster ist kein Problem.',false,'Falsch: Hohe Möbel nehmen das Tageslicht weg und verhindern das Lüften.'],
+          ['Im Viertelkreis vor einer Tür darf nichts stehen.',true,'Richtig: Sonst lässt sich die Tür nicht ganz öffnen.']],
+   tipp:'Denke an: Tür auf, Heizung frei, Fenster frei, Wasser am Anschluss.'},
+  {typ:'rechnen',frage:'Passt das? Rechne nach.',hinweis:'Trage nur die Zahl in Zentimetern ein.',
+   items:[['Das Schlafzimmer ist 3,70 m breit. An einer Wand steht ein Kleiderschrank (60 cm tief) mit 90 cm Bewegungsfläche. Wie viel Platz bleibt bis zur gegenüberliegenden Wand?',220,'cm','370 − 60 − 90 = 220 cm'],
+          ['Die Küche ist 2,30 m tief. Die Küchenzeile ist 60 cm tief und braucht 120 cm davor. Wie viel Platz bleibt übrig?',50,'cm','230 − 60 − 120 = 50 cm'],
+          ['Ein Bett ist 1,40 m breit. Rechts daneben sollen 60 cm frei bleiben, links steht es an der Wand. Wie viel Wandlänge brauchst du mindestens?',200,'cm','140 + 60 = 200 cm']],
+   tipp:'Ziehe von der Raummaß-Zahl erst das Möbel, dann die Bewegungsfläche ab.'}
+ ]},
+{nr:3,titel:'Deine erste Wohnung',dauer:'etwa 15 Minuten',
+ ziel:'Du liest den Grundriss deiner Wohnung, berechnest die Raumflächen und kennst deinen Auftrag.',
+ info:()=>`
+<p><b>Die Situation:</b> Du hast deine Ausbildung begonnen und ziehst in deine <b>erste eigene Wohnung</b>:
+zwei Zimmer, Küche, Bad und Flur. Für die Möbel hast du <b>${euro(WHG.budget)}</b> zur Verfügung.
+Bevor du einkaufst, planst du alles im <b>Einrichtungsplan</b>.</p>
+<figure class="abb">${grundrissFigur()}<figcaption>Grundriss der Wohnung (Innenmaße in Metern). Die Badeinrichtung ist schon eingebaut.</figcaption></figure>
+<h3>Zeichen im Grundriss</h3>
+<div class="legende">
+<div><svg viewBox="0 0 60 40"><rect x="0" y="12" width="60" height="16" fill="#fff" stroke="#16232E" stroke-width="1.5"/><line x1="0" y1="20" x2="60" y2="20" stroke="#16232E" stroke-width="1.5"/></svg>Fenster</div>
+<div><svg viewBox="0 0 60 40"><line x1="4" y1="38" x2="4" y2="4" stroke="#16232E" stroke-width="3"/><path d="M 40 38 A 36 36 0 0 0 4 4" fill="none" stroke="#16232E" stroke-width="1.5" stroke-dasharray="5 3"/></svg>Tür mit Schwenkbereich</div>
+<div><svg viewBox="0 0 60 40"><rect x="2" y="14" width="56" height="12" fill="#F3B9A9" stroke="#16232E" stroke-width="1.5"/></svg>Heizkörper</div>
+<div><svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="10" fill="#fff" stroke="#16232E" stroke-width="2"/><line x1="25" y1="20" x2="35" y2="20" stroke="#16232E" stroke-width="2"/></svg>Steckdose</div>
+<div><svg viewBox="0 0 60 40"><circle cx="30" cy="20" r="14" fill="#2F7EC1"/><text x="30" y="27" font-size="19" font-weight="bold" text-anchor="middle" fill="#fff" font-family="Arial">W</text></svg>Wasseranschluss für die Spüle</div>
+<div><svg viewBox="0 0 60 40"><rect x="16" y="6" width="28" height="28" fill="#6B4FA0"/><text x="30" y="26" font-size="15" font-weight="bold" text-anchor="middle" fill="#fff" font-family="Arial">TV</text></svg>Antennenanschluss</div>
+</div>
+<h3>Dein Auftrag</h3>
+<p>Richte die Wohnung ein. Diese Möbel <b>müssen</b> in den Plan:</p>
+<ul>${MUSS.map(m=>`<li>${m.text}</li>`).join('')}</ul>
+<p>Was danach noch ins Budget passt, wählst du selbst aus. Der Plan muss alle Regeln aus Station 2 einhalten.</p>`,
+ merke:'Fläche eines Raumes = Länge × Breite. Die Wohnfläche ist die Summe aller Raumflächen. Der Grundriss zeigt Fenster, Türen, Heizkörper und Anschlüsse – sie bestimmen, wo Möbel stehen können.',
+ heft:['Überschrift: <b>Meine erste Wohnung</b>','Notiere die fünf Räume mit ihrer Fläche.','Schreibe die Muss-Liste und das Budget ab.'],
+ aufgaben:[
+  {typ:'rechnen',frage:'Berechne die Flächen.',hinweis:'Runde auf zwei Stellen nach dem Komma. Trage nur die Zahl ein.',
+   items:[['Wohnzimmer: 4,80 m × 4,00 m',19.2,'m²','4,80 × 4,00 = 19,20 m²'],
+          ['Schlafzimmer: 3,70 m × 4,00 m',14.8,'m²','3,70 × 4,00 = 14,80 m²'],
+          ['Küche: 2,90 m × 2,30 m',6.67,'m²','2,90 × 2,30 = 6,67 m²'],
+          ['Wohnfläche gesamt: Wohnzimmer + Schlafzimmer + Küche 6,67 m² + Flur 6,44 m² + Bad 6,21 m²',53.32,'m²','19,20 + 14,80 + 6,67 + 6,44 + 6,21 = 53,32 m²'],
+          ['Die Muss-Möbel kosten in der günstigsten Ausführung 2 061 €. Wie viel Geld bleibt vom Budget übrig?',939,'€','3 000 € − 2 061 € = 939 €']],
+   tipp:'Fläche = Länge × Breite. Für die Wohnfläche alle fünf Räume addieren.'},
+  {typ:'kat',frage:'In welchen Raum gehört das Möbel?',hinweis:'Tippe bei jedem Möbel auf den passenden Raum.',
+   kat:['Wohnzimmer','Schlafzimmer','Küche','Flur','Bad'],
+   items:[['Küchenzeile mit Spüle',2,'Die Spüle braucht den Wasseranschluss in der Küche.'],
+          ['Waschmaschine',4,'Sie braucht Wasser und Abfluss – das gibt es im Bad.'],
+          ['Garderobe',3,'Jacken hängt man gleich am Eingang auf.'],
+          ['Kleiderschrank',1,'Kleidung zieht man meist im Schlafzimmer an.'],
+          ['TV-Board',0,'Der Antennenanschluss liegt im Wohnzimmer.'],
+          ['Esstisch mit Stühlen',0,'Die Küche ist zu klein für einen Esstisch.']],
+   tipp:'Schau auf die Anschlüsse im Grundriss: W und TV.'}
+ ]},
+{nr:4,titel:'Wohnung einrichten',dauer:'etwa 45 Minuten',planer:true,
+ ziel:'Du richtest die Wohnung im Maßstab ein, hältst Bewegungsflächen und Regeln ein und bleibst im Budget.'},
+{nr:5,titel:'Mein Einrichtungsplan',dauer:'etwa 15 Minuten',auswertung:true,
+ ziel:'Du stellst deinen Plan mit Kostenaufstellung vor und begründest deine Entscheidungen.'}
+];
+
+/* ---------- Navigation ---------- */
+function bauNav(){
+  const n=$('#stationen'); n.innerHTML='';
+  const b0=el('button',S.station===-1?'on':'','Start'); b0.onclick=()=>zeige(-1); n.appendChild(b0);
+  STATIONEN.forEach((st,i)=>{
+    const b=el('button',(S.station===i?'on ':'')+(S.fertig.includes(i)?'fertig':''),String(st.nr));
+    b.title=st.titel; b.setAttribute('aria-label','Station '+st.nr+': '+st.titel);
+    b.onclick=()=>zeige(i); n.appendChild(b);
+  });
+  $('#balken').style.width=(S.fertig.length/STATIONEN.length*100)+'%';
+  $('#stand').textContent=S.station===-2?'Lehrerbereich':S.station<0?'Start':'Station '+STATIONEN[S.station].nr+' von '+STATIONEN.length;
+}
+function zeige(i){
+  S.station=i; if(i>=0)S.zuletzt=i; sichere(); bauNav();
+  if(i!==-2){try{if(location.hash==='#lehrkraft')history.replaceState(null,'',location.pathname+location.search);}catch(e){}}
+  const b=$('#buehne'); b.innerHTML=''; b.className='wrap'+(i>=0&&STATIONEN[i].planer?' breit':'');
+  if(i===-2){lehrerSeite(b);try{if(location.hash!=='#lehrkraft')location.hash='lehrkraft';}catch(e){}}
+  else if(i<0)startseite(b);
+  else if(STATIONEN[i].planer)planerSeite(b,i);
+  else if(STATIONEN[i].auswertung)auswertung(b,i);
+  else station(b,i);
+  window.scrollTo(0,0);
+}
+function fertig(i){ if(!S.fertig.includes(i)){S.fertig.push(i);sichere();bauNav();} }
+function kopf(b,i){
+  const st=STATIONEN[i];
+  b.appendChild(el('div','druckkopf',`Kürzel: ${esc(S.kuerzel)||'________'} · Klasse: ${esc(S.klasse)||'_____'} · Einrichtungsplaner`));
+  b.appendChild(el('div','kicker','Station '+st.nr));
+  b.appendChild(el('h2','tt',st.titel));
+  b.appendChild(el('div','dauer',st.dauer));
+  b.appendChild(el('div','ziel','<b>Ziel:</b> '+st.ziel));
+}
+function fuss(b,i){
+  const f=el('div','fuss');
+  const z=el('button','knopf zweit',i>0?'← Station '+STATIONEN[i-1].nr:'← Start'); z.onclick=()=>zeige(i-1);
+  f.appendChild(z);
+  f.appendChild(speicherKnopf('Station speichern'));
+  if(i<STATIONEN.length-1){const w=el('button','knopf','Station '+STATIONEN[i+1].nr+' →'); w.onclick=()=>zeige(i+1); f.appendChild(w);}
+  b.appendChild(f);
+}
+function startseite(b){
+  const s=el('div','start');
+  s.innerHTML=`<div class="kicker">WTH/S · Pläne im Bauwesen</div>
+<div class="gross">Meine erste Wohnung einrichten</div>
+<div class="unter">Du planst die Möblierung einer 2-Zimmer-Wohnung im Maßstab – mit Bewegungsflächen, Regeln und Budget.</div>`;
+  if(FRUEHER&&S.zeit){
+    const letzte=(S.zuletzt>=0&&S.zuletzt<STATIONEN.length)?S.zuletzt:0;
+    const wb=el('div','weiter',`<b>Willkommen zurück!</b> Dein Arbeitsstand ist gespeichert (zuletzt: ${uhr(S.zeit)}). Erledigte Stationen: ${S.fertig.length} von ${STATIONEN.length}.`);
+    const wk=el('button','knopf','Weiter bei Station '+STATIONEN[letzte].nr+' →'); wk.onclick=()=>zeige(letzte); wb.appendChild(el('div','zeile2')).appendChild(wk);
+    s.appendChild(wb);
+  }
+  if(!IM_RAHMEN&&!(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)&&!navigator.standalone){
+    s.appendChild(el('div','app-tipp','<b>Als App auf dem iPad:</b> In Safari auf <b>Teilen</b> tippen und <b>„Zum Home-Bildschirm“</b> wählen. Dann startet der Einrichtungsplaner wie eine App – auch ohne Internet.'));
+  }
+  const nf=el('div','namefeld');
+  const nfz=el('div','nfz');
+  const feld=(text,key,max)=>{const l=el('label','nfl','<span>'+text+'</span>');const i=el('input');i.value=S[key]||'';i.maxLength=max;
+    i.autocomplete='off';i.setAttribute('autocorrect','off');i.setAttribute('autocapitalize','characters');i.spellcheck=false;
+    i.oninput=()=>{S[key]=i.value;sichere();};l.appendChild(i);return l;};
+  nfz.append(feld('Dein Kürzel (Anfangsbuchstaben)','kuerzel',8),feld('Klasse','klasse',6));
+  nf.appendChild(nfz);
+  nf.appendChild(el('p','hinweis2','Bitte nur die Anfangsbuchstaben eintragen (z. B. A. B.), keinen vollen Namen. Kürzel und Klasse stehen auf Ausdruck und Abgabe.'));
+  s.appendChild(nf);
+  const k=el('div','karten');
+  STATIONEN.forEach((st,i)=>{const c=el('button','k',`<h4>${st.nr} · ${st.titel}</h4><p>${st.dauer}</p>`);c.onclick=()=>zeige(i);k.appendChild(c);});
+  s.appendChild(k);
+  const lk=el('details','lk',`<summary>Hinweise für die Lehrkraft</summary><ul>
+<li>Stationen 1 bis 3 bereiten den Planer vor (Sinnbilder, Bewegungsflächen, Grundriss lesen).</li>
+<li>Station 4: Möbel antippen, im Plan ziehen, drehen. „Plan prüfen“ zeigt Fehler und Hinweise.</li>
+<li>Station 5: Plan, Kostenaufstellung, Begründungen und <b>digitale Abgabe</b> (Abgabe-Code oder Abgabe-Datei).</li>
+<li>Auswertung: unten „Lehrerbereich öffnen“ – Codes oder Dateien einlesen, alle Pläne mit Prüfergebnis und Kosten im Überblick.</li>
+<li>Ohne Tablet: Ausschneidebogen im Maßstab 1 : 50 als PDF (Grundriss, Möbel, Kostenliste, Prüfliste).</li>
+<li>Speichern: Jede Eingabe wird automatisch im Browser des Geräts gespeichert. Zusätzlich gibt es nach jeder Aufgabe und Station den Knopf „Zwischenspeichern“.</li>
+<li>Gerätewechsel oder gemeinsam genutzte iPads: oben „Sichern“ → „Als Datei sichern“. Die Datei (.json) lässt sich auf jedem Gerät mit „Datei laden“ wieder öffnen.</li></ul>`);
+  const lkb=el('button','knopf zweit','Lehrerbereich öffnen'); lkb.style.marginTop='12px'; lkb.onclick=()=>zeige(-2); lk.appendChild(lkb);
+  s.appendChild(lk);
+  const w=el('div','zeile2'); const go=el('button','knopf','Los geht’s mit Station 1 →'); go.onclick=()=>zeige(0); w.appendChild(go); s.appendChild(w);
+  b.appendChild(s);
+}
+function station(b,i){
+  const st=STATIONEN[i]; kopf(b,i);
+  b.appendChild(el('div','info',st.info()));
+  b.appendChild(el('div','merke','<span class="l">Merke</span>'+st.merke));
+  b.appendChild(el('div','heft','<span class="l">Ins Heft</span><ul>'+st.heft.map(h=>'<li>'+h+'</li>').join('')+'</ul>'));
+  const status=st.aufgaben.map(()=>false);
+  st.aufgaben.forEach((a,j)=>b.appendChild(aufgabe(a,j,i+'-'+j,ok=>{status[j]=ok; if(status.every(Boolean))fertig(i);})));
+  fuss(b,i);
+}
+
+/* ---------- Aufgabentypen ---------- */
+function aufgabe(a,j,key,melde){
+  const box=el('div','aufgabe');
+  box.appendChild(el('h3','','Aufgabe '+(j+1)+': '+a.frage));
+  box.appendChild(el('div','hinw',a.hinweis));
+  const inhalt=el('div'); box.appendChild(inhalt);
+  const zeile=el('div','zeile2'); const pr=el('button','knopf','Prüfen'); const neu=el('button','knopf zweit','Neu versuchen');
+  const erg=el('span','erg'); zeile.append(pr,neu,erg); box.appendChild(zeile);
+  const tipp=el('div','tipp','<b>Tipp:</b> '+a.tipp); box.appendChild(tipp);
+  const sz=el('div','zeile2'); sz.appendChild(speicherKnopf()); box.appendChild(sz);
+  let pruef;
+  const aend=d=>{S.antw[key]={d,geprueft:false};sichere();};
+  const baue=d=>{inhalt.innerHTML='';erg.textContent='';erg.className='erg';tipp.classList.remove('zeig');pruef=TYPEN[a.typ](inhalt,a,d,aend);};
+  const auswerten=()=>{const [r,n]=pruef();if(S.antw[key])S.antw[key].erg=[r,n];const q=r/n;erg.textContent=r+' von '+n+' richtig';erg.className='erg '+(q===1?'gut':q>=.5?'mittel':'schlecht');if(q<1)tipp.classList.add('zeig');melde(q===1);};
+  pr.onclick=()=>{auswerten();if(S.antw[key])S.antw[key].geprueft=true;sichere();};
+  neu.onclick=()=>{delete S.antw[key];sichere();baue(null);};
+  const alt=S.antw[key]; baue(alt?alt.d:null); if(alt&&alt.geprueft)auswerten();
+  return box;
+}
+const TYPEN={
+  match(c,a,d,aend){
+    const g=el('div','paar'); const L=el('div','','<h4>Begriff</h4>'), R=el('div','','<h4>Zuordnung</h4>'); g.append(L,R); c.appendChild(g);
+    const idx=a.paare.map((p,i)=>i);
+    const oL=d&&d.L?d.L:mischen(idx), oR=d&&d.R?d.R:mischen(idx);
+    const zu=d&&d.zu?Object.assign({},d.zu):{}; const nummer=d&&d.nr?Object.assign({},d.nr):{};
+    let sel=null; let nr=Math.max(0,...Object.values(nummer));
+    const melde=()=>aend({L:oL,R:oR,zu,nr:nummer});
+    const lb=oL.map(i=>{const o={i,t:a.paare[i][0]};const b=el('button','chip',o.t);b.onclick=()=>{lb.forEach(x=>x.classList.remove('sel'));if(zu[o.i]!==undefined)return;sel=o.i;b.classList.add('sel');};b._o=o;L.appendChild(b);return b;});
+    const rb=oR.map(i=>{const o={i,t:a.paare[i][1]};const b=el('button','chip','<span class="num"></span>'+o.t);b._o=o;b.onclick=()=>{
+      if(sel===null)return; if(Object.values(zu).includes(o.i))return;
+      zu[sel]=o.i; nr++; nummer[sel]=nr; setze(sel,o.i,nr); sel=null; melde();};R.appendChild(b);return b;});
+    function setze(li,ri,n){
+      const l=lb.find(x=>x._o.i===+li); l.classList.remove('sel'); l.querySelector('.num')||l.insertAdjacentHTML('afterbegin','<span class="num">'+n+'</span>');
+      rb.find(x=>x._o.i===+ri).querySelector('.num').textContent=n;
+    }
+    Object.keys(zu).forEach(li=>setze(li,zu[li],nummer[li]||''));
+    if(!d)melde();
+    return()=>{let r=0;lb.forEach(l=>{const i=l._o.i;const ok=zu[i]===i;l.classList.remove('right','wrong');l.classList.add(ok?'right':'wrong');if(ok)r++;});
+      rb.forEach(b=>{const k=Object.keys(zu).find(x=>zu[x]===b._o.i);b.classList.remove('right','wrong');if(k!==undefined)b.classList.add(+k===b._o.i?'right':'wrong');});return[r,a.paare.length];};
+  },
+  rf(c,a,d,aend){ return TYPEN.kat(c,{kat:['richtig','falsch'],items:a.items.map(x=>[x[0],x[1]?0:1,x[2]])},d,aend); },
+  kat(c,a,d,aend){
+    const wahl=d&&d.wahl?Object.assign({},d.wahl):{}; const zeilen=a.items.map((it,i)=>{
+      const z=el('div','z'); const t=el('div','txt',it[0]+'<div class="warum">'+it[2]+'</div>');
+      const bt=el('div','btns'); const bs=a.kat.map((k,ki)=>{const b=el('button',wahl[i]===ki?'pick':'',k);b.onclick=()=>{wahl[i]=ki;bs.forEach(x=>x.className='');b.className='pick';aend({wahl});};bt.appendChild(b);return b;});
+      z.append(t,bt); c.appendChild(z); return {z,bs};});
+    return()=>{let r=0;a.items.forEach((it,i)=>{const {z,bs}=zeilen[i];z.classList.add('checked');bs.forEach(x=>x.className='');
+      if(wahl[i]!==undefined){bs[wahl[i]].className=wahl[i]===it[1]?'good':'bad';}
+      if(wahl[i]!==it[1])bs[it[1]].className='good'; else r++;});return[r,a.items.length];};
+  },
+  rechnen(c,a,d,aend){
+    const box=el('div','rechnen'); c.appendChild(box);
+    const werte=d&&d.v?d.v.slice():a.items.map(()=>'');
+    const ins=a.items.map((it,i)=>{const r=el('div','r','<div>'+it[0]+'</div>');const w=el('div');const inp=el('input');
+      inp.inputMode='decimal';inp.autocomplete='off';inp.setAttribute('autocorrect','off');inp.setAttribute('autocapitalize','off');inp.spellcheck=false;
+      inp.value=werte[i]||''; inp.oninput=()=>{werte[i]=inp.value;aend({v:werte});};
+      w.append(inp,el('span','einheit',it[2]));r.appendChild(w);r.appendChild(el('div','weg','Lösungsweg: '+it[3]));box.appendChild(r);return inp;});
+    return()=>{box.classList.add('checked');let r=0;a.items.forEach((it,i)=>{const v=zahl(ins[i].value);const ok=!isNaN(v)&&Math.abs(v-it[1])<=Math.max(0.011,Math.abs(it[1])*0.002);
+      ins[i].className=ok?'right':'wrong';if(ok)r++;});return[r,a.items.length];};
+  }
+};
+
+/* ---------- Planer ---------- */
+let sel=-1, letztePruefung=null;
+function planerSeite(b,i){
+  kopf(b,i);
+  b.appendChild(el('div','anl',`<div>Möbel in der Liste antippen: Es erscheint im passenden Raum.</div><div>Möbel im Plan mit dem Finger oder der Maus ziehen.</div>
+<div><b>Drehen</b>: Die Vorderseite muss in den Raum zeigen.</div><div>Grün schraffiert: Bewegungsfläche des gewählten Möbels.</div>
+<div>Ein Rasterkästchen = 50 cm.</div><div><b>Plan prüfen</b> zeigt Fehler und Hinweise.</div>`));
+  const g=el('div','planer');
+  const L=el('div','planlinks'); const fl=el('div','planfl');
+  fl.appendChild(el('div','werkzeug')); fl.id='planfl';
+  fl.insertAdjacentHTML('beforeend',`<svg id="plan" xmlns="http://www.w3.org/2000/svg" viewBox="-75 -78 980 800" font-family="Helvetica, Arial, sans-serif" role="application" aria-label="Einrichtungsplan der Wohnung">
+<defs><pattern id="bwf" width="14" height="14" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="14" height="14" fill="rgba(46,125,79,.12)"/><line x1="0" y1="0" x2="0" y2="14" stroke="#2E7D4F" stroke-width="2.5"/></pattern></defs>
+<g id="grund">${grundrissSVG({masse:true,raster:true})}</g><g id="zonen"></g><g id="moebel"></g><g id="markierung"></g></svg>`);
+  fl.appendChild(el('div','budget'));
+  L.appendChild(fl);
+  const z=el('div','zeile2'); const pb=el('button','knopf','Plan prüfen'); pb.onclick=pruefen;
+  const lb=el('button','knopf rot','Alle Möbel entfernen'); lb.onclick=()=>{if(S.P.length&&confirmLeer()){S.P=[];sel=-1;sichere();zeichne();}};
+  z.append(pb,lb,speicherKnopf()); L.appendChild(z);
+  L.appendChild(el('div','pruef'));
+  const R=el('div','seite');
+  R.innerHTML='<h3>Muss-Liste</h3><ul class="muss"></ul><h3>Möbel auswählen</h3>';
+  const kg=el('div','katg'); let grp='';
+  KATALOG.forEach(k=>{ if(k.gruppe!==grp){grp=k.gruppe;kg.appendChild(el('h4','',grp));}
+    const bt=el('button','kat-item',`${sbSVG(k.id)}<span class="kt">${k.name}<small>${meter(k.w)} × ${meter(k.d)} m · ${euro(k.preis)}</small></span><span class="plus">+</span>`);
+    bt.setAttribute('aria-label',k.name+' hinzufügen'); bt.onclick=()=>hinzu(k.id); kg.appendChild(bt);});
+  R.appendChild(kg);
+  g.append(L,R); b.appendChild(g);
+  fuss(b,i);
+  zieh(); zeichne();
+}
+let leerFrage=0;
+function confirmLeer(){ /* zweimal tippen statt Dialog */
+  const t=Date.now(); if(t-leerFrage<3000){leerFrage=0;return true;}
+  leerFrage=t; const btn=[...document.querySelectorAll('.knopf.rot')][0]; if(btn){btn.textContent='Wirklich? Noch einmal tippen';setTimeout(()=>{btn.textContent='Alle Möbel entfernen';},3000);} return false;
+}
+function freiePosition(id){
+  const k=KAT[id]; const r=WHG.raeume.find(x=>x.id===k.raum);
+  const andere=S.P.map(bbox).concat(WHG.fest.map(f=>bbox({...f,fest:true})));
+  for(let y=r.y;y+k.d<=r.y+r.h;y+=10)for(let x=r.x;x+k.w<=r.x+r.w;x+=10){
+    const b={x,y,w:k.w,h:k.d};
+    if(!andere.some(o=>schneidet(b,o))&&!WHG.tueren.some(t=>imSchwenk(b,t)||(t.durch&&schneidet(b,t.durch)))&&!WHG.heizung.some(h=>schneidet(b,h.zone)))return {x,y};
+  }
+  return {x:Math.round((r.x+r.w/2-k.w/2)/5)*5,y:Math.round((r.y+r.h/2-k.d/2)/5)*5};
+}
+function hinzu(id){
+  const p=freiePosition(id); S.P.push({k:id,x:p.x,y:p.y,rot:0}); sel=S.P.length-1; veraltet(); sichere(); zeichne();
+  if(window.innerWidth<1060){const f=$('#planfl');if(f)f.scrollIntoView({behavior:'smooth',block:'start'});}
+}
+function drehe(){
+  if(sel<0)return; const p=S.P[sel]; const b0=bbox(p); const cx=b0.x+b0.w/2, cy=b0.y+b0.h/2;
+  p.rot=(p.rot+90)%360; const b=bbox(p); p.x=Math.round((cx-b.w/2)/5)*5; p.y=Math.round((cy-b.h/2)/5)*5; begrenze(p); veraltet(); sichere(); zeichne();
+}
+function begrenze(p){const b=bbox(p),A=WHG.aussen;p.x=Math.min(Math.max(p.x,A.x),A.x+A.w-b.w);p.y=Math.min(Math.max(p.y,A.y),A.y+A.h-b.h);}
+function schiebe(dx,dy){if(sel<0)return;const p=S.P[sel];p.x+=dx;p.y+=dy;begrenze(p);veraltet();sichere();zeichne();}
+function entferne(){if(sel<0)return;S.P.splice(sel,1);sel=-1;veraltet();sichere();zeichne();}
+function nochmal(){if(sel<0)return;const id=S.P[sel].k;hinzu(id);}
+function veraltet(){ if(letztePruefung){letztePruefung=null;const pr=$('.pruef');if(pr){pr.classList.add('zeig');pr.innerHTML='<h3>Plan geändert</h3><p style="margin:0">Tippe noch einmal auf „Plan prüfen“.</p>';}} }
+function zeichne(){
+  const svg=$('#plan'); if(!svg)return;
+  $('#moebel').innerHTML=S.P.map((p,i)=>`<g class="m" data-i="${i}">${moebelSVG(p)}</g>`).join('');
+  // Zonen des gewählten Möbels
+  let z='',m='';
+  if(sel>=0&&S.P[sel]){
+    const p=S.P[sel],k=KAT[p.k],b=bbox(p);
+    const zs=[]; if(k.vorn)zs.push(vornZone(b,p.rot,k.vorn)); if(k.seite)zs.push(...seitenZonen(b,p.rot,k.seite));
+    z=zs.map(q=>`<rect x="${q.x}" y="${q.y}" width="${q.w}" height="${q.h}" fill="url(#bwf)" stroke="#2E7D4F" stroke-width="2"/>`).join('');
+    m+=`<rect x="${b.x-4}" y="${b.y-4}" width="${b.w+8}" height="${b.h+8}" fill="none" stroke="#1F5F9E" stroke-width="5" stroke-dasharray="12 6" pointer-events="none"/>`;
+  }
+  if(letztePruefung){
+    const idx=new Set(); letztePruefung.fehler.forEach(f=>{if(f.i!==undefined)idx.add(f.i);if(f.j!==undefined)idx.add(f.j);});
+    idx.forEach(i=>{const b=bbox(S.P[i]);m+=`<rect x="${b.x-2}" y="${b.y-2}" width="${b.w+4}" height="${b.h+4}" fill="rgba(180,71,46,.18)" stroke="#B4472E" stroke-width="4" pointer-events="none"/>`;});
+  }
+  $('#zonen').innerHTML=z; $('#markierung').innerHTML=m;
+  // Werkzeugleiste
+  const w=$('.werkzeug');
+  if(sel>=0&&S.P[sel]){
+    const p=S.P[sel],k=KAT[p.k];
+    w.innerHTML=`<div class="wname">${k.name}<small>${meter(k.w)} × ${meter(k.d)} m · ${euro(k.preis)}</small></div>`;
+    const knopf=(t,f,lab,cl)=>{const b=el('button',cl||'',t);b.onclick=f;b.setAttribute('aria-label',lab);w.appendChild(b);};
+    knopf('⟳ Drehen',drehe,'Drehen'); knopf('←',()=>schiebe(-5,0),'nach links'); knopf('→',()=>schiebe(5,0),'nach rechts');
+    knopf('↑',()=>schiebe(0,-5),'nach oben'); knopf('↓',()=>schiebe(0,5),'nach unten');
+    knopf('+1',nochmal,'Noch eins hinzufügen'); knopf('Entfernen',entferne,'Entfernen','loesch');
+  } else w.innerHTML='<span class="leer">Tippe ein Möbel im Plan an, um es zu drehen, zu verschieben oder zu entfernen.</span>';
+  // Budget
+  const sum=S.P.reduce((s,p)=>s+KAT[p.k].preis,0), bu=$('.budget');
+  bu.className='budget'+(sum>WHG.budget?' drueber':'');
+  bu.innerHTML=`Ausgaben: <b>${euro(sum)}</b> von ${euro(WHG.budget)} · übrig: <b>${euro(WHG.budget-sum)}</b><div class="bb"><i style="width:${Math.min(100,sum/WHG.budget*100)}%"></i></div>`;
+  const ml=$('.muss'); if(ml)ml.innerHTML=MUSS.map(x=>`<li class="${x.ok(S.P)?'ok':''}">${x.text}</li>`).join('');
+}
+function svgPunkt(svg,e){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;return pt.matrixTransform(svg.getScreenCTM().inverse());}
+function zieh(){
+  const svg=$('#plan'); let drag=null;
+  svg.addEventListener('pointerdown',e=>{
+    const g=e.target.closest('.m');
+    if(!g){sel=-1;zeichne();return;}
+    const i=+g.dataset.i; sel=i; const q=svgPunkt(svg,e);
+    drag={i,dx:q.x-S.P[i].x,dy:q.y-S.P[i].y,bewegt:false};
+    try{svg.setPointerCapture(e.pointerId);}catch(_){}
+    e.preventDefault(); zeichne();
+  });
+  svg.addEventListener('pointermove',e=>{
+    if(!drag)return; const q=svgPunkt(svg,e), p=S.P[drag.i];
+    const nx=Math.round((q.x-drag.dx)/5)*5, ny=Math.round((q.y-drag.dy)/5)*5;
+    if(nx!==p.x||ny!==p.y){p.x=nx;p.y=ny;begrenze(p);if(!drag.bewegt){drag.bewegt=true;veraltet();}zeichne();}
+  });
+  const ende=()=>{if(drag){drag=null;sichere();}};
+  svg.addEventListener('pointerup',ende); svg.addEventListener('pointercancel',ende);
+}
+document.addEventListener('keydown',e=>{
+  if(!$('#plan')||sel<0||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;
+  const s=e.shiftKey?25:5;
+  if(e.key==='ArrowLeft'){schiebe(-s,0);e.preventDefault();}
+  else if(e.key==='ArrowRight'){schiebe(s,0);e.preventDefault();}
+  else if(e.key==='ArrowUp'){schiebe(0,-s);e.preventDefault();}
+  else if(e.key==='ArrowDown'){schiebe(0,s);e.preventDefault();}
+  else if(e.key==='r'||e.key==='R'){drehe();}
+  else if(e.key==='Delete'||e.key==='Backspace'){entferne();e.preventDefault();}
+});
+function pruefen(){
+  const r=pruefePlan(S.P); letztePruefung=r; zeichne();
+  const pr=$('.pruef'); pr.classList.add('zeig');
+  let h=`<h3>Prüfergebnis: ${r.fehler.length} ${r.fehler.length===1?'Fehler':'Fehler'}, ${r.hinweise.length} ${r.hinweise.length===1?'Hinweis':'Hinweise'}</h3><ul>`;
+  if(!r.fehler.length) h+=`<li class="g"><b>Sehr gut!</b> Dein Plan hält alle Regeln ein und bleibt im Budget. Weiter zu Station 5.</li>`;
+  r.fehler.forEach(f=>h+=`<li data-i="${f.i??''}">${f.t}</li>`);
+  r.hinweise.forEach(f=>h+=`<li class="h" data-i="${f.i??''}">Hinweis: ${f.t}</li>`);
+  pr.innerHTML=h+'</ul>';
+  pr.querySelectorAll('li[data-i]').forEach(li=>{if(li.dataset.i!=='')li.onclick=()=>{sel=+li.dataset.i;zeichne();$('#plan').scrollIntoView({behavior:'smooth',block:'center'});};});
+  if(!r.fehler.length)fertig(3);
+}
+
+/* ---------- Auswertung ---------- */
+function auswertung(b,i){
+  kopf(b,i);
+  const r=pruefePlan(S.P);
+  const moebel=S.P.map(p=>`<g>${moebelSVG(p)}</g>`).join('');
+  b.appendChild(el('figure','abb',grundrissFigur({moebel})+`<figcaption>Einrichtungsplan ${S.kuerzel?'von '+esc(wer()):''} · Wohnfläche 53,32 m²</figcaption>`));
+  const st=el('div','merke');
+  st.innerHTML=r.fehler.length?`<span class="l">Prüfung</span>Dein Plan hat noch <b>${r.fehler.length} Fehler</b>. Gehe zurück zu Station 4 und tippe auf „Plan prüfen“.`
+    :`<span class="l">Prüfung</span><b>Alle Regeln eingehalten.</b> ${r.hinweise.length?r.hinweise.length+' Hinweis(e) kannst du noch bedenken.':''}`;
+  b.appendChild(st);
+  // Kostenaufstellung
+  const zaehl={}; S.P.forEach(p=>zaehl[p.k]=(zaehl[p.k]||0)+1);
+  let t='<h3 style="font-size:24px;margin-top:20px">Kostenaufstellung</h3><table class="aus"><tr><th class="re">Anzahl</th><th>Möbel</th><th class="re">Einzelpreis</th><th class="re">Summe</th></tr>';
+  KATALOG.filter(k=>zaehl[k.id]).forEach(k=>t+=`<tr><td class="re">${zaehl[k.id]}</td><td>${k.name}</td><td class="re">${euro(k.preis)}</td><td class="re">${euro(k.preis*zaehl[k.id])}</td></tr>`);
+  t+=`<tr class="sum"><td></td><td>Gesamt</td><td></td><td class="re">${euro(r.summe)}</td></tr><tr><td></td><td>Budget</td><td></td><td class="re">${euro(WHG.budget)}</td></tr><tr><td></td><td>${r.summe>WHG.budget?'zu viel':'übrig'}</td><td></td><td class="re">${euro(Math.abs(WHG.budget-r.summe))}</td></tr></table>`;
+  if(!S.P.length)t+='<p>Noch keine Möbel geplant.</p>';
+  b.appendChild(el('div','',t));
+  // Reflexion
+  const fr=[['zusatz','Welche Möbel hast du zusätzlich zur Muss-Liste gewählt? Begründe.'],
+            ['regel','Welche Regel war am schwierigsten einzuhalten? Wie hast du das Problem gelöst?'],
+            ['sparen','Du hast 500 € weniger. Worauf verzichtest du?']];
+  const rf=el('div','refl','<h3 style="font-size:24px;margin-top:20px">Begründe deine Entscheidungen</h3>');
+  fr.forEach(([k,q])=>{const lab=el('label','',q);const ta=el('textarea');ta.id='r_'+k;lab.htmlFor=ta.id;ta.value=S.refl[k]||'';ta.setAttribute('autocorrect','off');
+    const dt=el('div','drucktext');dt.textContent=ta.value;
+    ta.oninput=()=>{S.refl[k]=ta.value;dt.textContent=ta.value;sichere();if(window.abgabeAkt)window.abgabeAkt();};rf.append(lab,ta,dt);});
+  b.appendChild(rf);
+  const z=el('div','zeile2'); const d=el('button','knopf zweit','Drucken / als PDF speichern'); d.onclick=()=>{try{window.print();}catch(e){}};
+  if(IM_RAHMEN)z.append(speicherKnopf()); else z.append(d,speicherKnopf());
+  b.appendChild(z);
+  abgabeBereich(b,i);
+  fuss(b,i);
+}
+/* ---------- Sichern: Datei exportieren / laden ---------- */
+function dateiname(){const n=((S.kuerzel||'ohne-Kuerzel')+'_'+(S.klasse||'')).trim().replace(/[^A-Za-z0-9ÄÖÜäöüß_-]+/g,'-');const d=new Date();
+  return 'Einrichtungsplan_'+n+'_'+d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')+'.json';}
+function alsDatei(){
+  sichere();
+  const daten=JSON.stringify({modul:'einrichtungsplan-wohnung',version:'2.0',gespeichert:new Date().toISOString(),stand:S},null,1);
+  speichereDatei(dateiname(),daten).then(st=>{
+    if(st==='ok')meldePanel('Datei „'+dateiname()+'“ wird gespeichert. Auf dem iPad: „Laden“ bzw. „In Dateien sichern“ wählen.',true);
+    else if(st==='abgelehnt')meldePanel('Speichern abgebrochen.',false);
+    else meldePanel('In dieser Ansicht können keine Dateien gespeichert werden. Dein Stand ist trotzdem automatisch gespeichert.',false);
+  });
+}
+function ausDatei(f){
+  const r=new FileReader();
+  r.onload=()=>{try{const o=JSON.parse(r.result);if(!o||o.modul!=='einrichtungsplan-wohnung'||!o.stand)throw 0;
+      S=Object.assign({name:'',kuerzel:'',klasse:'',P:[],fertig:[],refl:{},antw:{},station:-1,zeit:0},o.stand); sichere(); schliessePanel(); sel=-1; letztePruefung=null; zeige(S.station>=-1&&S.station<STATIONEN.length?S.station:-1);
+    }catch(e){meldePanel('Diese Datei passt nicht zu diesem Modul.',false);}};
+  r.readAsText(f);
+}
+let resetT=0;
+function panel(){
+  let p=$('#panel'); if(p){schliessePanel();return;}
+  p=el('div','panel'); p.id='panel'; p.setAttribute('role','dialog'); p.setAttribute('aria-label','Arbeitsstand sichern');
+  const kasten=el('div','pk');
+  kasten.innerHTML=`<h3>Arbeitsstand sichern</h3>
+<p class="pstat">${speicherOk?(S.zeit?'Automatisch auf diesem Gerät gespeichert: '+uhr(S.zeit):'Noch nichts gespeichert.'):'<b>Achtung:</b> Dieser Browser speichert nichts (z. B. privater Modus). Sichere deinen Stand als Datei.'}</p>
+<p style="font-size:19px;color:#55656F">Mit einer Datei kannst du auf einem anderen Gerät weiterarbeiten. Abgeben kannst du in Station 5.</p>`;
+  const z=el('div','pbtns');
+  const b1=el('button','knopf','Jetzt speichern'); b1.onclick=()=>{const ok=sichere();meldePanel(ok?'Gespeichert: '+uhr(S.zeit):'Speichern im Browser nicht möglich – bitte als Datei sichern.',ok);};
+  const b2=el('button','knopf','Als Datei sichern'); b2.onclick=alsDatei;
+  const lab=el('label','knopf zweit dateiknopf','Datei laden'); const fi=el('input'); fi.type='file'; fi.accept='.json,application/json,text/plain';
+  fi.onchange=()=>{if(fi.files[0])ausDatei(fi.files[0]);}; lab.appendChild(fi);
+  const b4=el('button','knopf rot','Alles zurücksetzen'); b4.onclick=()=>{const t=Date.now();if(t-resetT<3000){try{localStorage.removeItem(SPEICHER);}catch(e){}
+      S={name:'',kuerzel:'',klasse:'',P:[],fertig:[],refl:{},antw:{},station:-1,zeit:0};sel=-1;letztePruefung=null;schliessePanel();zeige(-1);return;}
+    resetT=t;b4.textContent='Wirklich alles löschen? Noch einmal tippen';setTimeout(()=>{b4.textContent='Alles zurücksetzen';},3000);};
+  const b5=el('button','knopf zweit','Schließen'); b5.onclick=schliessePanel;
+  z.append(b1,b2,lab,b4,b5); kasten.appendChild(z); kasten.appendChild(el('p','pmeld'));
+  p.appendChild(kasten); p.onclick=e=>{if(e.target===p)schliessePanel();};
+  document.body.appendChild(p); b1.focus();
+}
+function meldePanel(t,ok){const m=$('#panel .pmeld');if(m){m.textContent=t;m.className='pmeld '+(ok?'ja':'nein');}}
+function schliessePanel(){const p=$('#panel');if(p)p.remove();}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')schliessePanel();});
+
+/* ===== WebApp 2.0: Dateien, Abgabe, Lehrerbereich ===== */
+let dlCap;
+async function holeDownloads(){
+  if(dlCap!==undefined)return dlCap;
+  dlCap=null;
+  try{ if(window.claude&&typeof window.claude.use==='function'){
+      dlCap=await Promise.race([window.claude.use('downloads'),new Promise(r=>setTimeout(()=>r(null),4000))]); } }catch(e){dlCap=null;}
+  return dlCap;
+}
+async function speichereDatei(name,text){
+  const d=await holeDownloads();
+  if(d){ try{ await d.save({filename:name,data:text}); return 'ok'; }catch(e){ return (e&&e.code==='declined')?'abgelehnt':'nein'; } }
+  if(IM_RAHMEN) return 'nein';
+  const blob=new Blob([text],{type:'application/json'}); const url=URL.createObjectURL(blob);
+  const a=document.createElement('a'); a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url);a.remove();},1500);
+  return 'ok';
+}
+function b64u(u8){let s='';for(let i=0;i<u8.length;i+=0x8000)s+=String.fromCharCode.apply(null,u8.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');}
+function ub64(s){s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';const b=atob(s);const u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+async function kodiere(o){
+  const bytes=new TextEncoder().encode(JSON.stringify(o));
+  if(window.CompressionStream){ try{
+    const buf=await new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer();
+    return 'EP2Z.'+b64u(new Uint8Array(buf)); }catch(e){} }
+  return 'EP2J.'+b64u(bytes);
+}
+async function dekodiere(code){
+  const p=code.indexOf('.'); const pre=code.slice(0,p); let u=ub64(code.slice(p+1));
+  if(pre==='EP2Z'){
+    if(!window.DecompressionStream) throw new Error('Dieser Browser kann den Code nicht entpacken. Bitte Safari, Chrome oder Edge in aktueller Version verwenden.');
+    u=new Uint8Array(await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+  }
+  const o=JSON.parse(new TextDecoder().decode(u)); if(!o||o.m!=='ep')throw new Error('Kein Abgabe-Code des Einrichtungsplaners.'); return o;
+}
+function abgabeDaten(){
+  const erg={}; Object.entries(S.antw||{}).forEach(([k,v])=>{if(v&&v.erg)erg[k]=v.erg;});
+  return {m:'ep',v:2,k:(S.kuerzel||'').trim(),c:(S.klasse||'').trim(),t:Date.now(),
+    P:S.P.map(p=>[p.k,p.x,p.y,p.rot]),f:S.fertig.slice(),e:erg,r:S.refl||{}};
+}
+function abgabeBereich(b,i){
+  const box=el('div','abgabe');
+  const r=pruefePlan(S.P);
+  const idOk=!!((S.kuerzel||'').trim()&&(S.klasse||'').trim());
+  const liste=()=>{const nRefl=Object.values(S.refl||{}).filter(x=>x&&x.trim()).length;return `
+<li class="${idOk?'ok':''}">Kürzel und Klasse eingetragen${idOk?' ('+esc(wer())+')':''}</li>
+<li class="${S.fertig.filter(x=>x<4).length>=4?'ok':''}">Stationen 1 bis 4 erledigt</li>
+<li class="${S.P.length&&!r.fehler.length?'ok':''}">Plan ohne Fehler${r.fehler.length?' (noch '+r.fehler.length+' Fehler)':''}</li>
+<li class="${nRefl>=3?'ok':''}">Drei Begründungen geschrieben</li>`;};
+  box.innerHTML=`<h3>Plan abgeben</h3><ul class="abl">${liste()}</ul>
+<p>So gibst du ab: Tippe auf <b>„Abgabe-Code kopieren“</b> und füge den Code dort ein, wo es deine Lehrkraft sagt (zum Beispiel in der LernSax-Aufgabe). Du kannst die Abgabe auch als Datei speichern.</p>`;
+  const z=el('div','leiste');
+  const k1=el('button','knopf','Abgabe-Code kopieren');
+  const k2=el('button','knopf zweit','Abgabe-Datei speichern');
+  const st=el('span','gesp');
+  const ta=el('textarea','code'); ta.readOnly=true; ta.style.display='none'; ta.setAttribute('aria-label','Abgabe-Code');
+  ta.onfocus=()=>ta.select();
+  const pruefeId=()=>{ if(idOk)return true; st.className='gesp nein'; st.textContent='Trage zuerst auf der Startseite dein Kürzel und deine Klasse ein.'; return false; };
+  k1.onclick=async()=>{
+    if(!pruefeId())return;
+    fertig(i);
+    const code=await kodiere(abgabeDaten()); ta.value=code; ta.style.display='block';
+    let ok=false; try{ await navigator.clipboard.writeText(code); ok=true; }catch(e){}
+    fertig(i); S.abgabe=Date.now(); sichere();
+    st.className='gesp ja';
+    st.textContent=ok?'Code kopiert ('+code.length+' Zeichen). Jetzt einfügen und absenden.':'Kopieren nicht möglich: Code unten antippen, alles markieren und kopieren.';
+  };
+  k2.onclick=async()=>{
+    if(!pruefeId())return;
+    fertig(i);
+    const daten=abgabeDaten(); const code=await kodiere(daten);
+    const name='Abgabe_Einrichtungsplan_'+(daten.k+'_'+daten.c).replace(/[^A-Za-z0-9ÄÖÜäöüß_-]+/g,'-')+'.json';
+    const res=await speichereDatei(name,JSON.stringify({modul:'einrichtungsplan-abgabe',version:'2.0',code,daten},null,1));
+    if(res==='ok'){fertig(i);S.abgabe=Date.now();sichere();st.className='gesp ja';st.textContent='Datei „'+name+'“ wird gespeichert.';}
+    else if(res==='abgelehnt'){st.className='gesp nein';st.textContent='Speichern abgebrochen.';}
+    else {st.className='gesp nein';st.textContent='Hier können keine Dateien gespeichert werden – nutze den Abgabe-Code.';}
+  };
+  z.append(k1,k2,st); box.append(z,ta);
+  window.abgabeAkt=()=>{const u=box.querySelector('.abl');if(u)u.innerHTML=liste();};
+  b.appendChild(box);
+}
+
+/* ---------- Lehrerbereich ---------- */
+const LSPEICHER='einrichtungsplan-lehrer-v2';
+let L=[]; let lAkt=-1;
+function ladeL(){try{L=JSON.parse(localStorage.getItem(LSPEICHER)||'[]');}catch(e){L=[];}}
+function sichereL(){try{localStorage.setItem(LSPEICHER,JSON.stringify(L));}catch(e){}}
+const AUFG_GESAMT=STATIONEN.reduce((s,st)=>s+(st.aufgaben||[]).reduce((t,a)=>t+(a.paare||a.items).length,0),0);
+function nimmAuf(o){
+  if(!o||o.m!=='ep')return false;
+  const idx=L.findIndex(x=>x.k.toLowerCase()===String(o.k).toLowerCase()&&x.c.toLowerCase()===String(o.c).toLowerCase());
+  if(idx>=0){ if((L[idx].t||0)<=(o.t||0))L[idx]=o; } else L.push(o);
+  return true;
+}
+function auswertungVon(o){
+  const P=(o.P||[]).filter(a=>KAT[a[0]]).map(a=>({k:a[0],x:+a[1],y:+a[2],rot:+a[3]||0}));
+  const r=pruefePlan(P);
+  let rr=0,nn=0; Object.values(o.e||{}).forEach(v=>{rr+=+v[0]||0;nn+=+v[1]||0;});
+  const refl=Object.values(o.r||{}).filter(x=>x&&String(x).trim()).length;
+  return {P,r,rr,nn,refl,st:(o.f||[]).length};
+}
+function zeitText(t){return t?uhr(t):'–';}
+function lehrerSeite(b){
+  ladeL();
+  const w=el('div','lehrer');
+  w.innerHTML=`<div class="kicker">Für Lehrkräfte</div><h2 class="tt">Lehrerbereich: Abgaben auswerten</h2>
+<div class="ziel">Füge die Abgabe-Codes der Schüler ein oder lade ihre Abgabe-Dateien. Die Daten bleiben nur auf diesem Gerät – es wird nichts an einen Server geschickt.</div>`;
+  const k=el('div','kasten','<h3>Abgaben einlesen</h3>');
+  const ta=el('textarea','ein'); ta.placeholder='Codes hier einfügen – beliebig viele, auch mit anderem Text dazwischen (z. B. aus LernSax kopiert).';
+  ta.setAttribute('autocorrect','off');ta.setAttribute('autocapitalize','off');ta.spellcheck=false;
+  const z=el('div','leiste'); const kb=el('button','knopf','Codes einlesen');
+  const fl=el('label','dateiknopf2','Abgabe-Dateien laden'); const fi=el('input'); fi.type='file'; fi.multiple=true; fi.accept='.json,application/json,text/plain'; fl.appendChild(fi);
+  const st=el('span','gesp');
+  z.append(kb,fl,st); k.append(ta,z); w.appendChild(k);
+  const melde=(t,ok)=>{st.className='gesp '+(ok?'ja':'nein');st.textContent=t;};
+  kb.onclick=async()=>{
+    const roh=ta.value.replace(/\s+/g,'');
+    const codes=roh.match(/EP2[ZJ]\.[A-Za-z0-9_-]+?(?=EP2[ZJ]\.|[^A-Za-z0-9_-]|$)/g)||[];
+    let ok=0,bad=0;
+    for(const c of codes){
+      let o=null;
+      for(let cut=0;cut<=60&&c.length-cut>10&&!o;cut++){ try{ o=await dekodiere(c.slice(0,c.length-cut)); }catch(e){} }
+      if(o&&nimmAuf(o))ok++; else bad++;
+    }
+    sichereL(); zeigeListe();
+    melde(codes.length?`${ok} Abgabe(n) eingelesen${bad?', '+bad+' Code(s) fehlerhaft':''}.`:'Keinen Abgabe-Code gefunden.',ok>0&&!bad);
+    if(ok)ta.value='';
+  };
+  fi.onchange=async()=>{
+    let ok=0,bad=0;
+    for(const f of fi.files){ try{ const o=JSON.parse(await f.text());
+        if(o.modul==='einrichtungsplan-abgabe'&&o.daten){nimmAuf(o.daten);ok++;}
+        else if(o.modul==='einrichtungsplan-wohnung'&&o.stand){const s=o.stand;const erg={};Object.entries(s.antw||{}).forEach(([kk,v])=>{if(v&&v.erg)erg[kk]=v.erg;});
+          nimmAuf({m:'ep',v:2,k:(s.kuerzel||s.name||'?').trim(),c:(s.klasse||'').trim(),t:s.zeit||0,P:(s.P||[]).map(p=>[p.k,p.x,p.y,p.rot]),f:s.fertig||[],e:erg,r:s.refl||{}});ok++;}
+        else bad++; }catch(e){bad++;} }
+    fi.value=''; sichereL(); zeigeListe();
+    melde(`${ok} Datei(en) eingelesen${bad?', '+bad+' nicht lesbar':''}.`,ok>0&&!bad);
+  };
+  const lk=el('div','kasten','<h3>Übersicht</h3>');
+  const tw=el('div','tabwrap'); lk.appendChild(tw);
+  const z2=el('div','leiste');
+  const kc=el('button','knopf zweit','Tabelle kopieren (für Excel)'); const kst=el('span','gesp');
+  const kl=el('button','knopf rot','Liste leeren'); let lt=0;
+  kc.onclick=async()=>{
+    const zeilen=[['Kürzel','Klasse','Abgabe','Stationen','Aufgaben richtig','Aufgaben gesamt','Fehler','Hinweise','Kosten (€)','Begründungen']];
+    sortiert().forEach(o=>{const a=auswertungVon(o);zeilen.push([o.k,o.c,zeitText(o.t),a.st,a.rr,AUFG_GESAMT,a.r.fehler.length,a.r.hinweise.length,a.r.summe,a.refl]);});
+    const tsv=zeilen.map(z=>z.join('\t')).join('\n');
+    try{await navigator.clipboard.writeText(tsv);kst.className='gesp ja';kst.textContent='Kopiert – in Excel oder Numbers einfügen.';}
+    catch(e){kst.className='gesp nein';kst.textContent='Kopieren nicht möglich.';}
+  };
+  kl.onclick=()=>{const t=Date.now();if(t-lt<3000){L=[];lAkt=-1;sichereL();zeigeListe();kl.textContent='Liste leeren';return;}
+    lt=t;kl.textContent='Wirklich alle löschen? Noch einmal tippen';setTimeout(()=>{kl.textContent='Liste leeren';},3000);};
+  z2.append(kc,kl,kst); lk.appendChild(z2); w.appendChild(lk);
+  const det=el('div','detail'); w.appendChild(det);
+  const f=el('div','fuss'); const zb=el('button','knopf zweit','← Zur Startseite'); zb.onclick=()=>zeige(-1); f.appendChild(zb); w.appendChild(f);
+  b.appendChild(w);
+  function sortiert(){return L.slice().sort((a,b)=>String(a.c).localeCompare(String(b.c),'de',{numeric:true})||String(a.k).localeCompare(String(b.k),'de'));}
+  function zeigeListe(){
+    if(!L.length){tw.innerHTML='<p style="padding:14px 16px;margin:0">Noch keine Abgaben eingelesen.</p>';det.innerHTML='';return;}
+    const so=sortiert();
+    let h='<table class="uebers"><tr><th>Kürzel</th><th>Klasse</th><th>Abgabe</th><th class="re">Stationen</th><th class="re">Aufgaben</th><th class="re">Fehler</th><th class="re">Hinweise</th><th class="re">Kosten</th><th class="re">Begründ.</th><th></th></tr>';
+    so.forEach((o,ix)=>{const a=auswertungVon(o);
+      h+=`<tr class="${L.indexOf(o)===lAkt?'akt':''}"><td><b>${esc(o.k)}</b></td><td>${esc(o.c)}</td><td>${zeitText(o.t)}</td><td class="re">${a.st}/5</td><td class="re">${a.rr}/${AUFG_GESAMT}</td>
+<td class="re ${a.r.fehler.length?'rot':'gruen'}">${a.r.fehler.length}</td><td class="re">${a.r.hinweise.length}</td><td class="re ${a.r.summe>WHG.budget?'rot':''}">${euro(a.r.summe)}</td><td class="re">${a.refl}/3</td>
+<td><button data-ix="${L.indexOf(o)}">Ansehen</button></td></tr>`;});
+    tw.innerHTML=h+'</table>';
+    tw.scrollLeft=0;
+    tw.querySelectorAll('button[data-ix]').forEach(bt=>bt.onclick=()=>{lAkt=+bt.dataset.ix;zeigeListe();zeigeDetail();window.scrollTo({top:det.getBoundingClientRect().top+window.scrollY-170,behavior:'smooth'});});
+    if(lAkt>=0&&L[lAkt])zeigeDetail(); else det.innerHTML='';
+  }
+  function zeigeDetail(){
+    const o=L[lAkt]; if(!o){det.innerHTML='';return;}
+    const a=auswertungVon(o);
+    let h=`<h3>${esc(o.k)} · Klasse ${esc(o.c)} · abgegeben ${zeitText(o.t)}</h3>`;
+    h+=`<figure class="abb">${grundrissFigur({moebel:a.P.map(p=>'<g>'+moebelSVG(p)+'</g>').join('')})}</figure>`;
+    h+='<h3>Prüfergebnis</h3><ul class="fl">';
+    if(!a.r.fehler.length)h+='<li class="g">Alle Regeln eingehalten, Budget eingehalten.</li>';
+    a.r.fehler.forEach(f=>h+=`<li>${esc(f.t)}</li>`); a.r.hinweise.forEach(f=>h+=`<li class="h">Hinweis: ${esc(f.t)}</li>`);
+    h+='</ul>';
+    const zaehl={}; a.P.forEach(p=>zaehl[p.k]=(zaehl[p.k]||0)+1);
+    h+='<h3>Kostenaufstellung</h3><table class="aus"><tr><th class="re">Anzahl</th><th>Möbel</th><th class="re">Summe</th></tr>';
+    KATALOG.filter(k=>zaehl[k.id]).forEach(k=>h+=`<tr><td class="re">${zaehl[k.id]}</td><td>${k.name}</td><td class="re">${euro(k.preis*zaehl[k.id])}</td></tr>`);
+    h+=`<tr class="sum"><td></td><td>Gesamt (Budget ${euro(WHG.budget)})</td><td class="re">${euro(a.r.summe)}</td></tr></table>`;
+    h+='<h3>Aufgaben der Stationen 1 bis 3</h3><table class="aus"><tr><th>Station</th><th>Aufgabe</th><th class="re">richtig</th></tr>';
+    STATIONEN.forEach((st,si)=>(st.aufgaben||[]).forEach((au,ai)=>{const v=(o.e||{})[si+'-'+ai];const n=(au.paare||au.items).length;
+      h+=`<tr><td>${st.nr}</td><td>${esc(au.frage)}</td><td class="re">${v?v[0]+' von '+v[1]:'nicht geprüft (0 von '+n+')'}</td></tr>`;}));
+    h+='</table><h3>Begründungen</h3>';
+    [['zusatz','Zusätzliche Möbel'],['regel','Schwierigste Regel'],['sparen','500 € weniger']].forEach(([kk,t])=>{h+=`<p style="margin:10px 0 4px"><b>${t}</b></p><div class="reflt">${esc((o.r||{})[kk])||'–'}</div>`;});
+    det.innerHTML=h;
+  }
+  zeigeListe();
+}
+if('serviceWorker' in navigator && !IM_RAHMEN && location.protocol==='https:'){
+  window.addEventListener('load',()=>{navigator.serviceWorker.register('sw.js').catch(()=>{});});
+}
+$('#sichernKnopf').onclick=panel;
+lade(); bauNav(); zeige(location.hash==='#lehrkraft'?-2:(S.station>=-1&&S.station<STATIONEN.length?S.station:-1));
+window.addEventListener('hashchange',()=>{if(location.hash==='#lehrkraft'&&S.station!==-2)zeige(-2);});
+
+</script>
+</body>
+</html>

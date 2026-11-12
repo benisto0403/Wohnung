@@ -1,0 +1,16 @@
+{
+  "name": "Einrichtungsplaner – Meine erste Wohnung",
+  "short_name": "Einrichten",
+  "description": "WTH/S Klasse 9 · Pläne im Bauwesen: eine 2-Zimmer-Wohnung im Maßstab einrichten.",
+  "lang": "de",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#F7F7F3",
+  "theme_color": "#1F5F9E",
+  "icons": [
+    {"src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable"},
+    {"src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}
+  ]
+}
